@@ -1,6 +1,6 @@
 using System;
 
-namespace Pacco.Services.Orders.Core.Exceptions
+namespace Pacco.Services.Availability.Core.Exceptions
 {
     public abstract class ExceptionBase : Exception
     {

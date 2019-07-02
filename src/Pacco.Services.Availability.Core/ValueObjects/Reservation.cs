@@ -4,16 +4,14 @@ namespace Pacco.Services.Availability.Core.ValueObjects
 {
     public struct Reservation : IEquatable<Reservation>
     {
-        public DateTime From { get; private set; }
-        public DateTime To { get; private set; }
+        public DateTime DateTime { get; private set; }
         public Guid CustomerId { get; private set; }
         public Guid OrderId { get; private set; }
         public bool BelongsToVip { get; private set; }
 
-        public Reservation(DateTime from, DateTime to, Guid customerId, Guid orderId, bool belongsToVip)
+        public Reservation(DateTime dateTimeTime, Guid customerId, Guid orderId, bool belongsToVip)
         {
-            From = from;
-            To = to;
+            DateTime = dateTimeTime;
             CustomerId = customerId;
             OrderId = orderId;
             BelongsToVip = belongsToVip;

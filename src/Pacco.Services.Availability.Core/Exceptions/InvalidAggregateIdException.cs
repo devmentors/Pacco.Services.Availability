@@ -1,4 +1,4 @@
-namespace Pacco.Services.Orders.Core.Exceptions
+namespace Pacco.Services.Availability.Core.Exceptions
 {
     public class InvalidAggregateIdException : ExceptionBase
     {
