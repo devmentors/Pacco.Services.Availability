@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <LangVersion>latest</LangVersion>
+    <RootNamespace>Pacco.Services.Availability</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +14,11 @@
     <PackageReference Include="Convey.CQRS.Queries" Version="0.0.3-preview" />
     <PackageReference Include="Convey.WebApi" Version="0.0.3-preview" />
     <PackageReference Include="Convey.WebApi.CQRS" Version="0.0.3-preview" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Pacco.Services.Availability.Application\Pacco.Services.Availability.Application.csproj" />
+    <ProjectReference Include="..\Pacco.Services.Availability.Infrastructure\Pacco.Services.Availability.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
