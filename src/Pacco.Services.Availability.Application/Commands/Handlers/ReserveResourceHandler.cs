@@ -8,7 +8,7 @@ using Pacco.Services.Availability.Core.ValueObjects;
 
 namespace Pacco.Services.Availability.Application.Commands.Handlers
 {
-    public class ReserveResourceHandler : ICommandHandler<ReserveResource>
+    internal sealed class ReserveResourceHandler : ICommandHandler<ReserveResource>
     {
         private readonly IResourcesRepository _repository;
         private readonly IMessageBroker _messageBroker;

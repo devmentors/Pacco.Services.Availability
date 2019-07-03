@@ -9,4 +9,8 @@
       <ProjectReference Include="..\Pacco.Services.Availability.Core\Pacco.Services.Availability.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Exceptions" />
+    </ItemGroup>
+
 </Project>

@@ -7,7 +7,7 @@ using Pacco.Services.Availability.Core.Repositories;
 
 namespace Pacco.Services.Availability.Application.Commands.Handlers
 {
-    public class ReleaseResourceHandler : ICommandHandler<ReleaseResource>
+    internal sealed class ReleaseResourceHandler : ICommandHandler<ReleaseResource>
     {
         private readonly IResourcesRepository _repository;
         private readonly IMessageBroker _messageBroker;

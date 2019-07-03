@@ -7,7 +7,7 @@ using Pacco.Services.Availability.Core.Repositories;
 
 namespace Pacco.Services.Availability.Application.Commands.Handlers
 {
-    public class DeleteResourceHandler : ICommandHandler<DeleteResource>
+    internal sealed class DeleteResourceHandler : ICommandHandler<DeleteResource>
     {
         private readonly IResourcesRepository _repository;
         private readonly IMessageBroker _messageBroker;
