@@ -4,10 +4,10 @@ namespace Pacco.Services.Availability.Core.ValueObjects
 {
     public struct Reservation : IEquatable<Reservation>
     {
-        public DateTime DateTime { get; private set; }
-        public Guid CustomerId { get; private set; }
-        public Guid OrderId { get; private set; }
-        public bool BelongsToVip { get; private set; }
+        public DateTime DateTime { get; }
+        public Guid CustomerId { get; }
+        public Guid OrderId { get; }
+        public bool BelongsToVip { get; }
 
         public Reservation(DateTime dateTimeTime, Guid customerId, Guid orderId, bool belongsToVip)
         {
@@ -17,18 +17,14 @@ namespace Pacco.Services.Availability.Core.ValueObjects
             BelongsToVip = belongsToVip;
         }
 
-        public bool Equals(Reservation other)
-            => CustomerId.Equals(other.CustomerId) && OrderId.Equals(other.OrderId);
+        public bool Equals(Reservation reservation)
+            => CustomerId.Equals(reservation.CustomerId) && OrderId.Equals(reservation.OrderId) &&
+               DateTime.Date.Equals(reservation.DateTime.Date);
 
         public override bool Equals(object obj)
-            => obj is Reservation other && Equals(other);
+            => obj is Reservation reservation && Equals(reservation);
         
         public override int GetHashCode()
-        {
-            unchecked
-            {
-                return (CustomerId.GetHashCode() * 397) ^ OrderId.GetHashCode();
-            }
-        }
+            => DateTime.Date.GetHashCode();
     }
 }

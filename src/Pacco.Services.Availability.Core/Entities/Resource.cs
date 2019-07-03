@@ -1,18 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
-using System.Linq.Expressions;
 using Pacco.Services.Availability.Core.Events;
 using Pacco.Services.Availability.Core.Exceptions;
 using Pacco.Services.Availability.Core.ValueObjects;
 
 namespace Pacco.Services.Availability.Core.Entities
 {
-    public class Availability : AggregateRoot
+    public class Resource : AggregateRoot
     {
-        public Guid ResourceId { get; private set; }
-
         public IEnumerable<Reservation> Reservations
         {
             get => _reservations;
@@ -21,25 +17,24 @@ namespace Pacco.Services.Availability.Core.Entities
         
         private ISet<Reservation> _reservations = new HashSet<Reservation>();
 
-        public Availability(Guid id , Guid resourceId, IEnumerable<Reservation> reservations = null)
+        public Resource(Guid id , IEnumerable<Reservation> reservations = null)
         {
             Id = id;
-            ResourceId = resourceId;
             Reservations = reservations ?? Enumerable.Empty<Reservation>();
         }
 
-        public static Availability Create(Guid id, Guid resourceId, IEnumerable<Reservation> reservations = null)
+        public static Resource Create(Guid id, IEnumerable<Reservation> reservations = null)
         {
-            var availability = new Availability(id, resourceId, reservations);
-            availability.AddEvent(new AvailabilityCreated(availability));
+            var availability = new Resource(id, reservations);
+            availability.AddEvent(new ResourceCreated(availability));
             return availability;
         }
 
-        public void AddReservation(Reservation reservation, bool canBeExpropriated = false)
+        public void AddReservation(Reservation reservation, bool canExpropriate = false)
         {
             var hasCollidingReservation = _reservations.Any(HasTheSameReservationDate);
 
-            if (hasCollidingReservation && canBeExpropriated)
+            if (hasCollidingReservation && canExpropriate)
             {
                 var reservationToExpropriate = _reservations.First(HasTheSameReservationDate);
 
@@ -50,7 +45,7 @@ namespace Pacco.Services.Availability.Core.Entities
                 
                 _reservations.Remove(reservationToExpropriate);
                 _reservations.Add(reservation);
-                AddEvent(new AvailabilityReservationExpropriated(this, reservationToExpropriate));
+                AddEvent(new ReservationCanceled(this, reservationToExpropriate));
             }
             else if(hasCollidingReservation)
             {
@@ -62,10 +57,28 @@ namespace Pacco.Services.Availability.Core.Entities
                 return;
             }
             
-            AddEvent(new AvailabilityReservationAdded(this, reservation));
+            AddEvent(new ReservationAdded(this, reservation));
 
             bool HasTheSameReservationDate(Reservation r)
                 => r.DateTime.Date == reservation.DateTime.Date;
+        }
+
+        public void ReleaseReservation(Reservation reservation)
+        {
+            if (!_reservations.Remove(reservation))
+            {
+                return;
+            }
+            
+            AddEvent(new ReservationReleased(this, reservation));
+        }
+
+        public void Delete()
+        {
+            foreach (var reservation in Reservations)
+            {
+                AddEvent(new ReservationCanceled(this, reservation));
+            }
         }
     }
 }
