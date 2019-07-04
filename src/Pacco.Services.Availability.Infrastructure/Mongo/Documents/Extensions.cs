@@ -29,7 +29,7 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Documents
             => new ResourceDto
             {
                 Id = document.Id,
-                Reservation = document.Reservations.Select(r => new ReservationDto
+                Reservations = document.Reservations.Select(r => new ReservationDto
                 {
                     DateTime = r.DateTime,
                     BelongsToVip = r.BelongsToVip

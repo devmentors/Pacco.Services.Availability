@@ -31,9 +31,10 @@ namespace Pacco.Services.Availability.Core.Entities
             return availability;
         }
 
-        public void AddReservation(Reservation reservation, bool canExpropriate = false)
+        public void AddReservation(Reservation reservation)
         {
             var hasCollidingReservation = _reservations.Any(HasTheSameReservationDate);
+            var canExpropriate = reservation.BelongsToVip;
 
             if (hasCollidingReservation && canExpropriate)
             {

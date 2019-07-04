@@ -1,13 +1,16 @@
 ﻿using System.Threading.Tasks;
 using Convey;
-using Convey.CQRS.Commands;
-using Convey.CQRS.Events;
-using Convey.CQRS.Queries;
+using Convey.Logging;
 using Convey.WebApi;
 using Convey.WebApi.CQRS;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Pacco.Services.Availability.Application;
+using Pacco.Services.Availability.Application.Commands;
+using Pacco.Services.Availability.Application.DTO;
+using Pacco.Services.Availability.Application.Queries;
+using Pacco.Services.Availability.Infrastructure;
 
 namespace Pacco.Services.Availability
 {
@@ -17,14 +20,21 @@ namespace Pacco.Services.Availability
             => await WebHost.CreateDefaultBuilder(args)
                 .ConfigureServices(services => services
                     .AddConvey()
-                    .AddCommandHandlers()
-                    .AddEventHandlers()
-                    .AddQueryHandlers()
-                    .AddWebApi())
+                    .AddWebApi()
+                    .AddApplication()
+                    .AddInfrastructure()
+                    .Build())
                 .Configure(app => app
-                    .UseErrorHandler()
-                    .UseEndpoints(endpoints => endpoints
-                        .Get("", ctx => ctx.Response.WriteAsync("Welcome to Pacco Availability Service!"))))
+                    .UseInfrastructure()
+                    .UseDispatcherEndpoints(endpoints => endpoints
+                        .Get("", ctx => ctx.Response.WriteAsync("Welcome to Pacco Availability Service!"))
+                        .Get<GetResourceReservations, ResourceDto>("resources/{id}")
+                        .Post<AddResource>("resources",
+                            afterDispatch: (cmd, ctx) => ctx.Response.Created($"resources/{cmd.Id}"))
+                        .Post<ReserveResource>("resources/{id}/reserve")
+                        .Post<ReleaseResource>("resources/{id}/release")
+                        .Delete<DeleteResource>("resources/{id}")))
+                .UseLogging()
                 .Build()
                 .RunAsync();
     }

@@ -6,7 +6,7 @@ namespace Pacco.Services.Availability.Application.DTO
     public class ResourceDto
     {
         public Guid Id { get; set; }
-        public IEnumerable<ReservationDto> Reservation { get; set; }
+        public IEnumerable<ReservationDto> Reservations { get; set; }
     }
 
     public class ReservationDto

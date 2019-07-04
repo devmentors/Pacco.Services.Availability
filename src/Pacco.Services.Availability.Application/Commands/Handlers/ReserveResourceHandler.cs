@@ -34,7 +34,7 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
             var reservation = new Reservation(command.DateTime, command.CustomerId, 
                 command.OrderId, command.BelongsToVip);
             
-            resource.AddReservation(reservation, command.CanExpropriate);
+            resource.AddReservation(reservation);
 
             await _repository.UpdateAsync(resource);
 
