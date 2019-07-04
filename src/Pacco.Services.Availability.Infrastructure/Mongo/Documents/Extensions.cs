@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Pacco.Services.Availability.Application.DTO;
 using Pacco.Services.Availability.Core.Entities;
@@ -9,7 +10,7 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Documents
     {
         public static Resource AsEntity(this ResourceDocument document)
             => new Resource(document.Id, document.Reservations
-                .Select(r => new Reservation(r.DateTime, r.CustomerId, r.OrderId, r.BelongsToVip)), document.Version);
+                .Select(r => new Reservation(r.TimeStamp.AsDateTime(), r.Priority)), document.Version);
         
         public static ResourceDocument AsDocument(this Resource entity)
             => new ResourceDocument
@@ -18,10 +19,8 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Documents
                 Version = entity.Version,
                 Reservations = entity.Reservations.Select(r => new ReservationDocument
                 {
-                    DateTime = r.DateTime,
-                    CustomerId = r.CustomerId,
-                    OrderId = r.CustomerId,
-                    BelongsToVip = r.BelongsToVip
+                    TimeStamp = r.DateTime.AsDaysSinceEpoch(),
+                    Priority = r.Priority
                 })
             };
         
@@ -31,9 +30,15 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Documents
                 Id = document.Id,
                 Reservations = document.Reservations.Select(r => new ReservationDto
                 {
-                    DateTime = r.DateTime,
-                    BelongsToVip = r.BelongsToVip
+                    DateTime = r.TimeStamp.AsDateTime(),
+                    Priority = r.Priority
                 })
             };
+
+        private static int AsDaysSinceEpoch(this DateTime dateTime)
+            => (dateTime - new DateTime()).Days;
+        
+        private static DateTime AsDateTime(this int daysSinceEpoch)
+            => new DateTime().AddDays(daysSinceEpoch);
     }
 }

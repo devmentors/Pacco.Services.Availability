@@ -6,19 +6,14 @@ namespace Pacco.Services.Availability.Application.Commands
     public class ReserveResource : ICommand
     {
         public Guid Id { get; }
-        public DateTime DateTime { get; set; }
-        public Guid CustomerId { get; set; }
-        public Guid OrderId { get; set; }
-        public bool BelongsToVip { get; set; }
+        public DateTime DateTime { get; }
+        public int Priority { get; }
 
-        public ReserveResource(Guid id, DateTime dateTime, Guid customerId, Guid orderId, 
-            bool belongsToVip)
+        public ReserveResource(Guid id, DateTime dateTime, int priority)
         {
             Id = id;
             DateTime = dateTime;
-            CustomerId = customerId;
-            OrderId = orderId;
-            BelongsToVip = belongsToVip;
+            Priority = priority;
         }
     }
 }

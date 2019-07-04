@@ -5,21 +5,16 @@ namespace Pacco.Services.Availability.Core.ValueObjects
     public struct Reservation : IEquatable<Reservation>
     {
         public DateTime DateTime { get; }
-        public Guid CustomerId { get; }
-        public Guid OrderId { get; }
-        public bool BelongsToVip { get; }
+        public int Priority { get; }
 
-        public Reservation(DateTime dateTimeTime, Guid customerId, Guid orderId, bool belongsToVip)
+        public Reservation(DateTime dateTimeTime, int priority)
         {
             DateTime = dateTimeTime;
-            CustomerId = customerId;
-            OrderId = orderId;
-            BelongsToVip = belongsToVip;
+            Priority = priority;
         }
 
         public bool Equals(Reservation reservation)
-            => CustomerId.Equals(reservation.CustomerId) && OrderId.Equals(reservation.OrderId) &&
-               DateTime.Date.Equals(reservation.DateTime.Date);
+            => Priority.Equals(reservation.Priority) && DateTime.Date.Equals(reservation.DateTime.Date);
 
         public override bool Equals(object obj)
             => obj is Reservation reservation && Equals(reservation);

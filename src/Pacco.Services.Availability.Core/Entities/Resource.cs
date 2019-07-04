@@ -34,26 +34,21 @@ namespace Pacco.Services.Availability.Core.Entities
         public void AddReservation(Reservation reservation)
         {
             var hasCollidingReservation = _reservations.Any(HasTheSameReservationDate);
-            var canExpropriate = reservation.BelongsToVip;
 
-            if (hasCollidingReservation && canExpropriate)
+            if (hasCollidingReservation)
             {
-                var reservationToExpropriate = _reservations.First(HasTheSameReservationDate);
+                var collidingReservation = _reservations.First(HasTheSameReservationDate);
 
-                if (reservationToExpropriate.BelongsToVip)
+                if (collidingReservation.Priority >= reservation.Priority)
                 {
-                    throw new CannotExpropriateVipReservationException(reservationToExpropriate.CustomerId);
+                    throw new CannotExpropriateReservationException(Id, reservation.DateTime.Date);
                 }
                 
-                _reservations.Remove(reservationToExpropriate);
+                _reservations.Remove(collidingReservation);
                 _reservations.Add(reservation);
-                AddEvent(new ReservationCanceled(this, reservationToExpropriate));
+                AddEvent(new ReservationCanceled(this, collidingReservation));
+                return;
             }
-            else if(hasCollidingReservation)
-            {
-                throw new CollidingReservationException(reservation.CustomerId);
-            }
-
             if (!_reservations.Add(reservation))
             {
                 return;

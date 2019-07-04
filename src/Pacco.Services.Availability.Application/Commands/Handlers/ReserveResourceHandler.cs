@@ -31,8 +31,7 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
                 throw new ResourceNotFoundException(command.Id);
             }
 
-            var reservation = new Reservation(command.DateTime, command.CustomerId, 
-                command.OrderId, command.BelongsToVip);
+            var reservation = new Reservation(command.DateTime, command.Priority);
             
             resource.AddReservation(reservation);
 

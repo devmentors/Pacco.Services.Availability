@@ -12,6 +12,6 @@ namespace Pacco.Services.Availability.Application.DTO
     public class ReservationDto
     {
         public DateTime DateTime { get; set; }
-        public bool BelongsToVip { get; set; }
+        public int Priority { get; set; }
     }
 }

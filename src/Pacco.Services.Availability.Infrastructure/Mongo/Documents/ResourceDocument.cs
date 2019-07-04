@@ -13,9 +13,7 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Documents
 
     internal class ReservationDocument
     {
-        public DateTime DateTime { get; set; }
-        public Guid CustomerId { get; set; }
-        public Guid OrderId { get; set; }
-        public bool BelongsToVip { get; set; }
+        public int TimeStamp { get; set; }
+        public int Priority { get; set; }
     }
 }

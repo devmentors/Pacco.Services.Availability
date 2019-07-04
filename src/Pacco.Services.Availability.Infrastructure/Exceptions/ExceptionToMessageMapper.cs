@@ -13,17 +13,10 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
         {
             switch (exception)
             {
-                case CannotExpropriateVipReservationException ex:
+                case CannotExpropriateReservationException ex:
                 {
                     var command = (ReserveResource) message;
-                    return new ReserveResourceRejected(command.Id, command.CustomerId, command.OrderId,
-                        command.DateTime, ex.Message, ex.Code);
-                }
-                case CollidingReservationException ex:
-                {
-                    var command = (ReserveResource) message;
-                    return new ReserveResourceRejected(command.Id, command.CustomerId, command.OrderId,
-                        command.DateTime, ex.Message, ex.Code);
+                    return new ReserveResourceRejected(command.Id, command.DateTime, ex.Message, ex.Code);
                 }
                 case ResourceNotFoundException ex:
                 {
@@ -32,8 +25,7 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
                         case DeleteResource command: 
                             return new DeleteResourceRejected(command.Id, ex.Message, ex.Code);
                         case ReserveResource command:
-                            return new ReserveResourceRejected(command.Id, command.CustomerId, command.OrderId, 
-                                command.DateTime, ex.Message, ex.Code);
+                            return new ReserveResourceRejected(command.Id, command.DateTime, ex.Message, ex.Code);
                         case ReleaseResource command:
                             return new ReleaseResourceRejected(command.Id, command.DateTime, ex.Message, ex.Code);
                     }
