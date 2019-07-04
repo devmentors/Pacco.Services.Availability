@@ -8,12 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Convey" Version="0.0.2-preview" />
-    <PackageReference Include="Convey.CQRS.Commands" Version="0.0.3-preview" />
-    <PackageReference Include="Convey.CQRS.Events" Version="0.0.3-preview" />
-    <PackageReference Include="Convey.CQRS.Queries" Version="0.0.3-preview" />
-    <PackageReference Include="Convey.WebApi" Version="0.0.3-preview" />
-    <PackageReference Include="Convey.WebApi.CQRS" Version="0.0.3-preview" />
+    <PackageReference Include="Convey" Version="0.0.*" />
+    <PackageReference Include="Convey.Logging" Version="0.0.*" />
+    <PackageReference Include="Convey.WebApi" Version="0.0.*" />
+    <PackageReference Include="Convey.WebApi.CQRS" Version="0.0.*" />
   </ItemGroup>
 
   <ItemGroup>

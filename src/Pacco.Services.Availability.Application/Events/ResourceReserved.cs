@@ -3,16 +3,18 @@ using Convey.CQRS.Events;
 
 namespace Pacco.Services.Availability.Application.Events
 {
-    public class ReservationCanceled : IEvent
+    public class ResourceReserved : IEvent
     {
-        public Guid ResourceId { get; }
+        public Guid Id { get; }
         public Guid CustomerId { get; }
+        public Guid OrderId { get; }
         public DateTime DateTime { get; }
 
-        public ReservationCanceled(Guid resourceId, Guid customerId, DateTime dateTime)
+        public ResourceReserved(Guid id, Guid customerId, Guid orderId, DateTime dateTime)
         {
-            ResourceId = resourceId;
+            Id = id;
             CustomerId = customerId;
+            OrderId = orderId;
             DateTime = dateTime;
         }
     }

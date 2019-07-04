@@ -17,10 +17,11 @@ namespace Pacco.Services.Availability.Core.Entities
         
         private ISet<Reservation> _reservations = new HashSet<Reservation>();
 
-        public Resource(Guid id , IEnumerable<Reservation> reservations = null)
+        public Resource(Guid id , IEnumerable<Reservation> reservations = null, int? version = null)
         {
             Id = id;
             Reservations = reservations ?? Enumerable.Empty<Reservation>();
+            Version = version ?? 0;
         }
 
         public static Resource Create(Guid id, IEnumerable<Reservation> reservations = null)
@@ -79,6 +80,8 @@ namespace Pacco.Services.Availability.Core.Entities
             {
                 AddEvent(new ReservationCanceled(this, reservation));
             }
+            
+            AddEvent(new ResourceDeleted(this));
         }
     }
 }

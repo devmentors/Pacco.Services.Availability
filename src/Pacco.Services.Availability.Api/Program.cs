@@ -23,7 +23,6 @@ namespace Pacco.Services.Availability
                     .AddWebApi())
                 .Configure(app => app
                     .UseErrorHandler()
-                    .UsePublicMessages()
                     .UseEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync("Welcome to Pacco Availability Service!"))))
                 .Build()
