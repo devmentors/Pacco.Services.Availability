@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Convey.Persistence.MongoDB;
+using MongoDB.Driver;
 using Pacco.Services.Availability.Core.Entities;
 using Pacco.Services.Availability.Core.Repositories;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
@@ -22,9 +23,10 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Repositories
 
         public Task AddAsync(Resource resource)
             => _repository.AddAsync(resource.AsDocument());
-        
+
         public Task UpdateAsync(Resource resource)
-            => _repository.UpdateAsync(resource.AsDocument());
+            => _repository.Collection.ReplaceOneAsync(r => r.Id == resource.Id && r.Version < resource.Version,
+                resource.AsDocument());
 
         public Task DeleteAsync(Guid id)
             => _repository.DeleteAsync(id);
