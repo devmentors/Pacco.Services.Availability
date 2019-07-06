@@ -13,16 +13,18 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
         {
             switch (exception)
             {
+                case ResourceAlreadyExistsException ex: return new AddResourceRejected(ex.Id, ex.Message, ex.Code);
                 case CannotExpropriateReservationException ex:
                 {
                     var command = (ReserveResource) message;
                     return new ReserveResourceRejected(command.Id, command.DateTime, ex.Message, ex.Code);
                 }
+
                 case ResourceNotFoundException ex:
                 {
                     switch (message)
                     {
-                        case DeleteResource command: 
+                        case DeleteResource command:
                             return new DeleteResourceRejected(command.Id, ex.Message, ex.Code);
                         case ReserveResource command:
                             return new ReserveResourceRejected(command.Id, command.DateTime, ex.Message, ex.Code);
@@ -30,8 +32,9 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
                             return new ReleaseResourceRejected(command.Id, command.DateTime, ex.Message, ex.Code);
                     }
                 }
-                break;
+                    break;
             }
+
             return null;
         }
     }

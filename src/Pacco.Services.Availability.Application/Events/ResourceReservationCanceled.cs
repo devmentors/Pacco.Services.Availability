@@ -5,12 +5,12 @@ namespace Pacco.Services.Availability.Application.Events
 {
     public class ResourceReservationCanceled : IEvent
     {
-        public Guid ResourceId { get; }
+        public Guid Id { get; }
         public DateTime DateTime { get; }
 
-        public ResourceReservationCanceled(Guid resourceId, DateTime dateTime)
+        public ResourceReservationCanceled(Guid id, DateTime dateTime)
         {
-            ResourceId = resourceId;
+            Id = id;
             DateTime = dateTime;
         }
     }

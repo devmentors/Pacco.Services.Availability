@@ -1,0 +1,30 @@
+@url = http://localhost:5001
+@resourceId = 00000000-0000-0000-0000-000000000000
+@dateTime = 2019-10-10
+
+###
+GET {{url}}/resources/{{resourceId}}
+
+###
+POST {{url}}/resources
+Content-Type: application/json
+
+{
+  "id": "{{resourceId}}"
+}
+
+###
+POST {{url}}/resources/{{resourceId}}/reservations
+Content-Type: application/json
+
+{
+  "id": "{{resourceId}}",
+  "dateTime": "{{dateTime}}",
+  "priority": 0
+}
+
+###
+DELETE {{url}}/resources/{{resourceId}}/reservations/{{dateTime}}
+
+###
+DELETE {{url}}/resources/{{resourceId}}

@@ -21,6 +21,9 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Repositories
             return document?.AsEntity();
         }
 
+        public Task<bool> ExistsAsync(Guid id)
+            => _repository.ExistsAsync(r => r.Id == id);
+
         public Task AddAsync(Resource resource)
             => _repository.AddAsync(resource.AsDocument());
 

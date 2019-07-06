@@ -8,14 +8,14 @@ using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
 
 namespace Pacco.Services.Availability.Infrastructure.Mongo.Queries.Handlers
 {
-    internal sealed class GetResourceReservationsHandler : IQueryHandler<GetResourceReservations, ResourceDto>
+    internal sealed class GetResourceReservationsHandler : IQueryHandler<GetResourceReservation, ResourceDto>
     {
         private readonly IMongoRepository<ResourceDocument, Guid> _repository;
 
         public GetResourceReservationsHandler(IMongoRepository<ResourceDocument, Guid> repository)
             => _repository = repository;
 
-        public async Task<ResourceDto> HandleAsync(GetResourceReservations query)
+        public async Task<ResourceDto> HandleAsync(GetResourceReservation query)
         {
             var document = await _repository.GetAsync(r => r.Id == query.Id);
             return document?.AsDto();

@@ -28,11 +28,11 @@ namespace Pacco.Services.Availability
                     .UseInfrastructure()
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync("Welcome to Pacco Availability Service!"))
-                        .Get<GetResourceReservations, ResourceDto>("resources/{id}")
+                        .Get<GetResourceReservation, ResourceDto>("resources/{id}")
                         .Post<AddResource>("resources",
                             afterDispatch: (cmd, ctx) => ctx.Response.Created($"resources/{cmd.Id}"))
-                        .Post<ReserveResource>("resources/{id}/reserve")
-                        .Post<ReleaseResource>("resources/{id}/release")
+                        .Post<ReserveResource>("resources/{id}/reservations")
+                        .Delete<ReleaseResource>("resources/{id}/reservations/{dateTime}")
                         .Delete<DeleteResource>("resources/{id}")))
                 .UseLogging()
                 .Build()
