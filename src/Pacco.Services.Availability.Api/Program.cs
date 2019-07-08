@@ -12,7 +12,7 @@ using Pacco.Services.Availability.Application.DTO;
 using Pacco.Services.Availability.Application.Queries;
 using Pacco.Services.Availability.Infrastructure;
 
-namespace Pacco.Services.Availability
+namespace Pacco.Services.Availability.Api
 {
     public class Program
     {
