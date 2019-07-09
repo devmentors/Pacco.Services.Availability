@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Convey;
+using Convey.Docs.Swagger;
 using Convey.Logging;
 using Convey.WebApi;
 using Convey.WebApi.CQRS;
+using Convey.WebApi.Swagger;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,9 +25,11 @@ namespace Pacco.Services.Availability.Api
                     .AddWebApi()
                     .AddApplication()
                     .AddInfrastructure()
+                    .AddWebApiSwaggerDocs()
                     .Build())
                 .Configure(app => app
                     .UseInfrastructure()
+                    .UseSwaggerDocs()
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync("Welcome to Pacco Availability Service!"))
                         .Get<GetResourceReservation, ResourceDto>("resources/{id}")
