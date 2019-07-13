@@ -1,12 +1,16 @@
 ﻿using System;
 using Convey;
+using Convey.Configurations.Vault;
 using Convey.CQRS.Queries;
 using Convey.Discovery.Consul;
 using Convey.HTTP;
 using Convey.LoadBalancing.Fabio;
 using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.RabbitMQ;
+using Convey.Metrics.AppMetrics;
 using Convey.Persistence.MongoDB;
+using Convey.Tracing.Jaeger;
+using Convey.Tracing.Jaeger.RabbitMQ;
 using Convey.WebApi;
 using Convey.WebApi.CQRS;
 using Elasticsearch.Net;
@@ -39,18 +43,23 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddHttpClient()
                 .AddConsul()
                 .AddFabio()
-                .AddRabbitMq()
+                .AddRabbitMq(plugins: p => p.RegisterJaeger())
                 .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
                 .AddMongo()
+                .AddMetrics()
+                .AddJaeger()
+                .AddVault()
                 .AddMongoRepository<ResourceDocument, Guid>("Resources");
         }
 
         public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
         {
             app.UseErrorHandler()
-                .UsePublicContracts<ContractAttribute>()
+                .UseVault()
                 .UseInitializers()
+                .UsePublicContracts<ContractAttribute>()
                 .UseConsul()
+                .UseMetrics()
                 .UseRabbitMq()
                 .SubscribeCommand<AddResource>()
                 .SubscribeCommand<DeleteResource>()
