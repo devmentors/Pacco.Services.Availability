@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Convey;
+using Convey.Configurations.Vault;
 using Convey.Docs.Swagger;
 using Convey.Logging;
+using Convey.Types;
 using Convey.WebApi;
 using Convey.WebApi.CQRS;
 using Convey.WebApi.Swagger;
@@ -33,7 +35,7 @@ namespace Pacco.Services.Availability.Api
                     .UseInfrastructure()
                     .UseSwaggerDocs()
                     .UseDispatcherEndpoints(endpoints => endpoints
-                        .Get("", ctx => ctx.Response.WriteAsync("Welcome to Pacco Availability Service!"))
+                        .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
                         .Get<GetResourceReservation, ResourceDto>("resources/{id}")
                         .Post<AddResource>("resources",
                             afterDispatch: (cmd, ctx) => ctx.Response.Created($"resources/{cmd.Id}"))
@@ -41,6 +43,7 @@ namespace Pacco.Services.Availability.Api
                         .Delete<ReleaseResource>("resources/{id}/reservations/{dateTime}")
                         .Delete<DeleteResource>("resources/{id}")))
                 .UseLogging()
+                .UseVault()
                 .Build()
                 .RunAsync();
     }
