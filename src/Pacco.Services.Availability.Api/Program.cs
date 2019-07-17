@@ -22,7 +22,12 @@ namespace Pacco.Services.Availability.Api
     public class Program
     {
         public static async Task Main(string[] args)
-            => await WebHost.CreateDefaultBuilder(args)
+            => await GetWebHostBuilder(args)
+                .Build()
+                .RunAsync();
+
+        public static IWebHostBuilder GetWebHostBuilder(string[] args)
+            => WebHost.CreateDefaultBuilder(args)
                 .ConfigureServices(services => services
                     .AddOpenTracing()
                     .AddConvey()
@@ -43,8 +48,6 @@ namespace Pacco.Services.Availability.Api
                         .Delete<ReleaseResource>("resources/{id}/reservations/{dateTime}")
                         .Delete<DeleteResource>("resources/{id}")))
                 .UseLogging()
-                .UseVault()
-                .Build()
-                .RunAsync();
+                .UseVault();
     }
 }
