@@ -34,7 +34,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Fixtures
                 },
                 DependencyInjection = ioc =>
                 {
-                    ioc.AddSingleton<INamingConventions>(new RabbitMqFixtureNamingConventions("discounts"));
+                    ioc.AddSingleton<INamingConventions>(new RabbitMqFixtureNamingConventions("availability"));
                 },
                 Plugins = p => p  
                     .UseAttributeRouting()
@@ -48,27 +48,21 @@ namespace Pacco.Services.Availability.IntegrationTests.Fixtures
             => _client.PublishAsync(message, ctx => 
                 ctx.UseMessageContext(CorrelationContext.Empty).UsePublishConfiguration(p => p.WithRoutingKey(GetRoutingKey(@message, @namespace))));
         
-        public async Task<TEntity> SubscribeAndGetAsync<TMessage, TEntity, TKey>(
-            Func<TKey, Task<TEntity>> getEntity, TKey id) where TMessage : class
+        public async Task<TaskCompletionSource<TEntity>> SubscribeAndGetAsync<TMessage, TEntity>(
+            Func<Guid, TaskCompletionSource<TEntity>, Task> onMessageReceived, Guid id)
         {
-            var taskCompletionSource = new TaskCompletionSource<Resource>();
+            var taskCompletionSource = new TaskCompletionSource<TEntity>();
             var guid = Guid.NewGuid().ToString();
-
-            var entity = default(TEntity);
             
             await _client.SubscribeAsync<TMessage>(
-                async _ =>
-                {
-                    entity = await getEntity(id);
-                },
+                async _ => await onMessageReceived(id, taskCompletionSource),
                 ctx => ctx.UseSubscribeConfiguration(cfg =>
                     cfg
                         .FromDeclaredQueue(
                             builder => builder
                                 .WithDurability(false)
                                 .WithName(guid))));
-            
-            return entity;
+            return taskCompletionSource;
         }
         
         private string GetRoutingKey<T>(T message, string @namespace = null)

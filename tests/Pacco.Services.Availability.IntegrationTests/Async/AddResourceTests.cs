@@ -1,6 +1,4 @@
 using System;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -13,45 +11,24 @@ using Pacco.Services.Availability.IntegrationTests.Fixtures;
 using Shouldly;
 using Xunit;
 
-namespace Pacco.Services.Availability.IntegrationTests.Sync
+namespace Pacco.Services.Availability.IntegrationTests.Async
 {
     public class AddResourceTests : IDisposable
     {
-        Task<HttpResponseMessage> Act(AddResource command)
-            => _httpClient.PostAsync("resources", GetHttpContent(command));
-
-        [Fact]
-        public async Task AddResource_Endpoint_Should_Return_Created_Http_Status_Code()
-        {
-            var command = new AddResource(new Guid(ResourceId));
-
-            var response = await Act(command);
-            
-            response.ShouldNotBeNull();
-            response.StatusCode.ShouldBe(HttpStatusCode.Created);
-        }
-        
-        [Fact]
-        public async Task AddResource_Endpoint_Should_Return_Location_Header_With_Correct_ResourceId()
-        {
-            var command = new AddResource(new Guid(ResourceId));
-
-            var response = await Act(command);
-
-            var locationHeader = response.Headers.FirstOrDefault(h => h.Key == "Location").Value.First();
-            
-            locationHeader.ShouldNotBeNull();
-            locationHeader.ShouldBe($"resources/{ResourceId}");
-        }
+        Task Act(AddResource command)
+            => _rabbitMqFixture.PublishAsync(command);
         
         [Fact]
         public async Task AddResource_Endpoint_Should_Add_Resource_With_Given_Id_To_Database()
         {
             var command = new AddResource(new Guid(ResourceId));
 
+            var tcs = await _rabbitMqFixture.SubscribeAndGetAsync<AddResource, ResourceDocument>(_mongoDbFixture.GetAsync,
+                command.Id);
+
             await Act(command);
 
-            var document = await _mongoDbFixture.GetAsync(command.Id);
+            var document = await tcs.Task;
             
             document.ShouldNotBeNull();
             document.Id.ShouldBe(command.Id);
@@ -60,6 +37,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Sync
         #region ARRANGE    
         
         private readonly MongoDbFixture<ResourceDocument, Guid> _mongoDbFixture;
+        private readonly RabbitMqFixture _rabbitMqFixture;
         private readonly HttpClient _httpClient;
         
         private const string ResourceId = "587acaf9-629f-4896-a893-4e94ae628652";
@@ -76,6 +54,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Sync
 
         public AddResourceTests()
         {
+            _rabbitMqFixture = new RabbitMqFixture("availability");
             _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("resource-test-db", 
                 "Resources");
 
