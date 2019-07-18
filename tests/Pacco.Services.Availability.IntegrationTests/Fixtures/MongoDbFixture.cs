@@ -7,45 +7,53 @@ using Pacco.Services.Availability.Core.Entities;
 
 namespace Pacco.Services.Availability.IntegrationTests.Fixtures
 {
-    public class MongoDbFixture<TEntity, TKey> : IDisposable where TEntity : IIdentifiable<TKey> 
+    public class MongoDbFixture<TEntity, TKey> : IDisposable where TEntity : class, IIdentifiable<TKey> 
     {
         private readonly IMongoClient _client;
         private readonly IMongoDatabase _database;
         private readonly IMongoCollection<TEntity> _collection;
         private readonly string _databaseName;
+        private readonly string _collectionName;
+
         bool _disposed = false;
-        
+
         public MongoDbFixture(string databaseName, string collectionName)
         {
             _client = new MongoClient("mongodb://localhost:27017");
             _databaseName = databaseName;
+            _collectionName = collectionName;
             _database = _client.GetDatabase(databaseName);
             InitializeMongo();
             _collection = _database.GetCollection<TEntity>(collectionName);
         }
         
-        public void InitializeMongo()
+        private void InitializeMongo()
             => new MongoDbFixtureInitializer(_database, null, new MongoDbOptions())
                 .InitializeAsync().GetAwaiter().GetResult();
 
-        public Task InsertAsync(string collectionName, TEntity entity)
-            => _database.GetCollection<TEntity>(collectionName).InsertOneAsync(entity);
+        public Task InsertAsync(TEntity entity)
+            => _database.GetCollection<TEntity>(_collectionName).InsertOneAsync(entity);
         
-        public async Task<TEntity> GetAsync(TKey expectedId)
+        
+        public Task<TEntity> GetAsync(TKey id)
+            => _collection.Find(d => d.Id.Equals(id)).SingleOrDefaultAsync();
+        
+        public async Task GetAsync(TKey expectedId, TaskCompletionSource<TEntity> receivedTask)
         {
             if (expectedId == null)
             {
                 throw new ArgumentNullException(nameof(expectedId));
             }
 
-            var entity = await _collection.Find(d => d.Id.Equals(expectedId)).SingleOrDefaultAsync();
+            var entity = await GetAsync(expectedId);
             
             if (entity is null)
             {
-                throw new ArgumentNullException();
+                receivedTask.TrySetCanceled();
+                return;
             }
-
-            return entity;
+            
+            receivedTask.TrySetResult(entity);
         }
 
         protected virtual void Dispose(bool disposing)

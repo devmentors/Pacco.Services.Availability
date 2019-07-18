@@ -28,17 +28,17 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Documents
             => new ResourceDto
             {
                 Id = document.Id,
-                Reservations = document.Reservations.Select(r => new ReservationDto
+                Reservations = document.Reservations?.Select(r => new ReservationDto
                 {
                     DateTime = r.TimeStamp.AsDateTime(),
                     Priority = r.Priority
                 })
             };
 
-        private static int AsDaysSinceEpoch(this DateTime dateTime)
+        internal static int AsDaysSinceEpoch(this DateTime dateTime)
             => (dateTime - new DateTime()).Days;
         
-        private static DateTime AsDateTime(this int daysSinceEpoch)
+        internal static DateTime AsDateTime(this int daysSinceEpoch)
             => new DateTime().AddDays(daysSinceEpoch);
     }
 }
