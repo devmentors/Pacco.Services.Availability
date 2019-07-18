@@ -1,11 +1,13 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using Pacco.Services.Availability.Api;
 using Pacco.Services.Availability.Application.Commands;
+using Pacco.Services.Availability.Application.Events;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
 using Pacco.Services.Availability.IntegrationTests.Fixtures;
 using Shouldly;
@@ -23,7 +25,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Async
         {
             var command = new AddResource(new Guid(ResourceId));
 
-            var tcs = await _rabbitMqFixture.SubscribeAndGetAsync<AddResource, ResourceDocument>(_mongoDbFixture.GetAsync,
+            var tcs = await _rabbitMqFixture.SubscribeAndGetAsync<ResourceAdded, ResourceDocument>(_mongoDbFixture.GetAsync,
                 command.Id);
 
             await Act(command);

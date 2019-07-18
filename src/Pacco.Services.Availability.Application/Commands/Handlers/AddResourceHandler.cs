@@ -24,7 +24,7 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
         
         public async Task HandleAsync(AddResource command)
         {
-            if ((await _repository.ExistsAsync(command.Id)))
+            if (await _repository.ExistsAsync(command.Id))
             {
                 throw new ResourceAlreadyExistsException(command.Id);
             }
