@@ -17,7 +17,7 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Queries.Handlers
 
         public async Task<ResourceDto> HandleAsync(GetResourceReservation query)
         {
-            var document = await _repository.GetAsync(r => r.Id == query.Id);
+            var document = await _repository.GetAsync(r => r.Id == query.ResourceId);
             return document?.AsDto();
         }
     }

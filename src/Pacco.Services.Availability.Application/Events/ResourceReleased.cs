@@ -5,12 +5,12 @@ namespace Pacco.Services.Availability.Application.Events
 {
     public class ResourceReleased : IEvent
     {
-        public Guid Id { get; }
+        public Guid ResourceId { get; }
         public DateTime DateTime { get; }
 
-        public ResourceReleased(Guid id, DateTime dateTime)
+        public ResourceReleased(Guid resourceId, DateTime dateTime)
         {
-            Id = id;
+            ResourceId = resourceId;
             DateTime = dateTime;
         }
     }

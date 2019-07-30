@@ -23,11 +23,11 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
         
         public async Task HandleAsync(ReleaseResource command)
         {
-            var resource = await _repository.GetAsync(command.Id);
+            var resource = await _repository.GetAsync(command.ResourceId);
             
             if (resource is null)
             {
-                throw new ResourceNotFoundException(command.Id);
+                throw new ResourceNotFoundException(command.ResourceId);
             }
 
             var reservation = resource.Reservations.FirstOrDefault(r => r.DateTime.Date == command.DateTime.Date);

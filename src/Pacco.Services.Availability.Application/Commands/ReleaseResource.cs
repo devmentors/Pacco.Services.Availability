@@ -5,12 +5,12 @@ namespace Pacco.Services.Availability.Application.Commands
 {
     public class ReleaseResource : ICommand
     {
-        public Guid Id { get; }
+        public Guid ResourceId { get; }
         public DateTime DateTime { get; }
 
-        public ReleaseResource(Guid id, DateTime dateTime)
+        public ReleaseResource(Guid resourceId, DateTime dateTime)
         {
-            Id = id;
+            ResourceId = resourceId;
             DateTime = dateTime;
         }
     }

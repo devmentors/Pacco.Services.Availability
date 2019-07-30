@@ -5,13 +5,13 @@ namespace Pacco.Services.Availability.Application.Commands
 {
     public class ReserveResource : ICommand
     {
-        public Guid Id { get; }
+        public Guid ResourceId { get; }
         public DateTime DateTime { get; }
         public int Priority { get; }
 
-        public ReserveResource(Guid id, DateTime dateTime, int priority)
+        public ReserveResource(Guid resourceId, DateTime dateTime, int priority)
         {
-            Id = id;
+            ResourceId = resourceId;
             DateTime = dateTime;
             Priority = priority;
         }

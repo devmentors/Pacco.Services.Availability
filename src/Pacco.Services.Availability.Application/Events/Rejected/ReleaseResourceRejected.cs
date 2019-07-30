@@ -5,14 +5,14 @@ namespace Pacco.Services.Availability.Application.Events.Rejected
 {
     public class ReleaseResourceRejected : IRejectedEvent
     {
-        public Guid Id { get; }
+        public Guid ResourceId { get; }
         public DateTime DateTime { get; }
         public string Reason { get; }
         public string Code { get; }
 
-        public ReleaseResourceRejected(Guid id, DateTime dateTime, string reason, string code)
+        public ReleaseResourceRejected(Guid resourceId, DateTime dateTime, string reason, string code)
         {
-            Id = id;
+            ResourceId = resourceId;
             DateTime = dateTime;
             Reason = reason;
             Code = code;

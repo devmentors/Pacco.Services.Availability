@@ -5,9 +5,9 @@ namespace Pacco.Services.Availability.Application.Commands
 {
     public class AddResource : ICommand
     {
-        public Guid Id { get; }
+        public Guid ResourceId { get; }
 
-        public AddResource(Guid id)
-            => Id = id;
+        public AddResource(Guid resourceId)
+            => ResourceId = resourceId;
     }
 }

@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Convey.CQRS.Events;
 using Convey.MessageBrokers;
-using Pacco.Services.Availability.Core.Entities;
+using Pacco.Services.Availability.Infrastructure;
 using RawRabbit;
 using RawRabbit.Common;
 using RawRabbit.Configuration;
@@ -47,7 +46,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Fixtures
         public async Task PublishAsync<TMessage>(TMessage message, string @namespace = null) where TMessage : class
         {
             await _client.PublishAsync(message, ctx => 
-                ctx.UseMessageContext(CorrelationContext.Empty).UsePublishConfiguration(p => p.WithRoutingKey(GetRoutingKey(@message, @namespace))));
+                ctx.UseMessageContext(new CorrelationContext()).UsePublishConfiguration(p => p.WithRoutingKey(GetRoutingKey(@message, @namespace))));
         }
         
         public async Task<TaskCompletionSource<TEntity>> SubscribeAndGetAsync<TMessage, TEntity>(

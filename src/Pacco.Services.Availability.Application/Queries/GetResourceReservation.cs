@@ -6,6 +6,6 @@ namespace Pacco.Services.Availability.Application.Queries
 {
     public class GetResourceReservation : IQuery<ResourceDto>
     {
-        public Guid Id { get; set; }
+        public Guid ResourceId { get; set; }
     }
 }

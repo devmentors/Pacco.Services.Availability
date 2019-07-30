@@ -17,7 +17,7 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
                 case CannotExpropriateReservationException ex:
                 {
                     var command = (ReserveResource) message;
-                    return new ReserveResourceRejected(command.Id, command.DateTime, ex.Message, ex.Code);
+                    return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message, ex.Code);
                 }
 
                 case ResourceNotFoundException ex:
@@ -25,11 +25,11 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
                     switch (message)
                     {
                         case DeleteResource command:
-                            return new DeleteResourceRejected(command.Id, ex.Message, ex.Code);
+                            return new DeleteResourceRejected(command.ResourceId, ex.Message, ex.Code);
                         case ReserveResource command:
-                            return new ReserveResourceRejected(command.Id, command.DateTime, ex.Message, ex.Code);
+                            return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message, ex.Code);
                         case ReleaseResource command:
-                            return new ReleaseResourceRejected(command.Id, command.DateTime, ex.Message, ex.Code);
+                            return new ReleaseResourceRejected(command.ResourceId, command.DateTime, ex.Message, ex.Code);
                     }
                 }
                     break;

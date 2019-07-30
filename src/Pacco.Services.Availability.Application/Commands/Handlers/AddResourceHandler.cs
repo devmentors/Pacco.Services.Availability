@@ -24,12 +24,12 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
         
         public async Task HandleAsync(AddResource command)
         {
-            if (await _repository.ExistsAsync(command.Id))
+            if (await _repository.ExistsAsync(command.ResourceId))
             {
-                throw new ResourceAlreadyExistsException(command.Id);
+                throw new ResourceAlreadyExistsException(command.ResourceId);
             }
             
-            var resource = Resource.Create(command.Id);
+            var resource = Resource.Create(command.ResourceId);
             await _repository.AddAsync(resource);
 
             var events = _eventMapper.MapAll(resource.Events);

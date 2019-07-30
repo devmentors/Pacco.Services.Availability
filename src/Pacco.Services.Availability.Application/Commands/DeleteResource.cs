@@ -5,9 +5,9 @@ namespace Pacco.Services.Availability.Application.Commands
 {
     public class DeleteResource : ICommand
     {
-        public Guid Id { get; }
+        public Guid ResourceId { get; }
 
-        public DeleteResource(Guid id)
-            => Id = id;
+        public DeleteResource(Guid resourceId)
+            => ResourceId = resourceId;
     }
 }

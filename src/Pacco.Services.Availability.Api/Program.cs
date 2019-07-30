@@ -41,12 +41,12 @@ namespace Pacco.Services.Availability.Api
                     .UseSwaggerDocs()
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
-                        .Get<GetResourceReservation, ResourceDto>("resources/{id}")
+                        .Get<GetResourceReservation, ResourceDto>("resources/{resourceId}")
                         .Post<AddResource>("resources",
-                            afterDispatch: (cmd, ctx) => ctx.Response.Created($"resources/{cmd.Id}"))
-                        .Post<ReserveResource>("resources/{id}/reservations")
-                        .Delete<ReleaseResource>("resources/{id}/reservations/{dateTime}")
-                        .Delete<DeleteResource>("resources/{id}")))
+                            afterDispatch: (cmd, ctx) => ctx.Response.Created($"resources/{cmd.ResourceId}"))
+                        .Post<ReserveResource>("resources/{resourceId}/reservations")
+                        .Delete<ReleaseResource>("resources/{resourceId}/reservations/{dateTime}")
+                        .Delete<DeleteResource>("resources/{resourceId}")))
                 .UseLogging()
                 .UseVault();
     }

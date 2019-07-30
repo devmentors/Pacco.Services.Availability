@@ -1,7 +1,6 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
@@ -26,14 +25,14 @@ namespace Pacco.Services.Availability.IntegrationTests.Async
             var command = new AddResource(new Guid(ResourceId));
 
             var tcs = await _rabbitMqFixture.SubscribeAndGetAsync<ResourceAdded, ResourceDocument>(_mongoDbFixture.GetAsync,
-                command.Id);
+                command.ResourceId);
 
             await Act(command);
 
             var document = await tcs.Task;
             
             document.ShouldNotBeNull();
-            document.Id.ShouldBe(command.Id);
+            document.Id.ShouldBe(command.ResourceId);
         }
         
         #region ARRANGE    

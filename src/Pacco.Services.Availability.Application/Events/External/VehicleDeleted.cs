@@ -7,9 +7,9 @@ namespace Pacco.Services.Availability.Application.Events.External
     [MessageNamespace("vehicles")]
     public class VehicleDeleted : IEvent
     {
-        public Guid Id { get; }
+        public Guid VehicleId { get; }
 
-        public VehicleDeleted(Guid id)
-            => Id = id;
+        public VehicleDeleted(Guid vehicleId)
+            => VehicleId = vehicleId;
     }
 }

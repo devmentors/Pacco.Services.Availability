@@ -13,6 +13,6 @@ namespace Pacco.Services.Availability.Application.Events.External
             => _dispatcher = dispatcher;
 
         public Task HandleAsync(VehicleDeleted @event)
-            => _dispatcher.SendAsync(new DeleteResource(@event.Id));
+            => _dispatcher.SendAsync(new DeleteResource(@event.VehicleId));
     }
 }

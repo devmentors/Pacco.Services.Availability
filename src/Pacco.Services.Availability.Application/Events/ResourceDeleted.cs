@@ -5,9 +5,9 @@ namespace Pacco.Services.Availability.Application.Events
 {
     public class ResourceDeleted : IEvent
     {
-        public Guid Id { get; }
+        public Guid ResourceId { get; }
 
-        public ResourceDeleted(Guid id)
-            => Id = id;
+        public ResourceDeleted(Guid resourceId)
+            => ResourceId = resourceId;
     }
 }

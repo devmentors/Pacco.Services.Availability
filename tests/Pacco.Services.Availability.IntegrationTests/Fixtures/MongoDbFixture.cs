@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Convey.Persistence.MongoDB;
 using Convey.Types;
 using MongoDB.Driver;
-using Pacco.Services.Availability.Core.Entities;
 
 namespace Pacco.Services.Availability.IntegrationTests.Fixtures
 {

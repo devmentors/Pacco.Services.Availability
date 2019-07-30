@@ -51,10 +51,10 @@ namespace Pacco.Services.Availability.IntegrationTests.Sync
 
             await Act(command);
 
-            var document = await _mongoDbFixture.GetAsync(command.Id);
+            var document = await _mongoDbFixture.GetAsync(command.ResourceId);
             
             document.ShouldNotBeNull();
-            document.Id.ShouldBe(command.Id);
+            document.Id.ShouldBe(command.ResourceId);
         }
         
         #region ARRANGE    
