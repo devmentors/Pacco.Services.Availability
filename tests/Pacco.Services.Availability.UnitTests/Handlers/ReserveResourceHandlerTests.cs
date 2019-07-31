@@ -32,7 +32,7 @@ namespace Pacco.Services.Availability.UnitTests.Handlers
             
             exception.ShouldNotBeNull();
             exception.ShouldBeAssignableTo<ResourceNotFoundException>();
-            ((ResourceNotFoundException)exception).Id.ShouldBe(command.Id);
+            ((ResourceNotFoundException)exception).Id.ShouldBe(command.ResourceId);
         }
         
         [Fact]
@@ -47,7 +47,7 @@ namespace Pacco.Services.Availability.UnitTests.Handlers
             _repository.GetAsync(resourceId).Returns(resource);
             _mapper.MapAll(null).ReturnsForAnyArgs(new List<IEvent>
             {
-                new ResourceReserved(command.Id, command.DateTime)
+                new ResourceReserved(command.ResourceId, command.DateTime)
             });
 
             await Act(command);
