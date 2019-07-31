@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Convey.MessageBrokers;
-using Pacco.Services.Availability.Infrastructure;
+using Pacco.Services.Availability.Infrastructure.Contexts;
 using RawRabbit;
 using RawRabbit.Common;
 using RawRabbit.Configuration;
