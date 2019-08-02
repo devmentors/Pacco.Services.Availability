@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Convey;
 using Convey.CQRS.Queries;
 using Convey.Discovery.Consul;
@@ -14,7 +15,9 @@ using Convey.WebApi;
 using Convey.WebApi.CQRS;
 using Elasticsearch.Net;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Pacco.Services.Availability.Application;
 using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Application.Events.External;
@@ -72,5 +75,10 @@ namespace Pacco.Services.Availability.Infrastructure
 
             return app;
         }
+
+        internal static CorrelationContext GetCorrelationContext(this IHttpContextAccessor accessor)
+            => accessor.HttpContext.Request.Headers.TryGetValue("Correlation-Context", out var json)
+                ? JsonConvert.DeserializeObject<CorrelationContext>(json.FirstOrDefault())
+                : null;
     }
 }
