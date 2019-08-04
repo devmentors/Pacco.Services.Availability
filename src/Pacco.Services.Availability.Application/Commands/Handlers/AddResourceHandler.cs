@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
+using Microsoft.Extensions.Logging;
 using Pacco.Services.Availability.Application.Exceptions;
 using Pacco.Services.Availability.Application.Services;
 using Pacco.Services.Availability.Core.Entities;
@@ -13,13 +14,15 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
         private readonly IResourcesRepository _repository;
         private readonly IMessageBroker _messageBroker;
         private readonly IEventMapper _eventMapper;
+        private readonly ILogger<AddResourceHandler> _logger;
 
         public AddResourceHandler(IResourcesRepository repository, IMessageBroker messageBroker,
-            IEventMapper eventMapper)
+            IEventMapper eventMapper, ILogger<AddResourceHandler> logger)
         {
             _repository = repository;
             _messageBroker = messageBroker;
             _eventMapper = eventMapper;
+            _logger = logger;
         }
         
         public async Task HandleAsync(AddResource command)
@@ -31,9 +34,9 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
             
             var resource = Resource.Create(command.ResourceId);
             await _repository.AddAsync(resource);
-
             var events = _eventMapper.MapAll(resource.Events);
             await _messageBroker.PublishAsync(events.ToArray());
+            _logger.LogInformation($"Added a resource with id: {command.ResourceId}.");
         }
     }
 }
