@@ -26,6 +26,7 @@ using Pacco.Services.Availability.Core.Repositories;
 using Pacco.Services.Availability.Infrastructure.Contexts;
 using Pacco.Services.Availability.Infrastructure.Exceptions;
 using Pacco.Services.Availability.Infrastructure.Jaeger;
+using Pacco.Services.Availability.Infrastructure.Logging;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
 using Pacco.Services.Availability.Infrastructure.Mongo.Repositories;
 using Pacco.Services.Availability.Infrastructure.Services;
@@ -55,6 +56,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddMetrics()
                 .AddJaeger()
                 .AddJaegerDecorators()
+                .AddHandlersLogging()
                 .AddMongoRepository<ResourceDocument, Guid>("Resources");
         }
 
