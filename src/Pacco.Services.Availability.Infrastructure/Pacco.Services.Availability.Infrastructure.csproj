@@ -12,6 +12,7 @@
         <PackageReference Include="Convey.LoadBalancing.Fabio" Version="0.0.*" />
         <PackageReference Include="Convey.HTTP" Version="0.0.*" />
         <PackageReference Include="Convey.Logging" Version="0.0.*" />
+        <PackageReference Include="Convey.Logging.CQRS" Version="0.0.3" />
         <PackageReference Include="Convey.MessageBrokers" Version="0.0.*" />
         <PackageReference Include="Convey.MessageBrokers.CQRS" Version="0.0.*" />
         <PackageReference Include="Convey.MessageBrokers.RabbitMQ" Version="0.0.*" />
