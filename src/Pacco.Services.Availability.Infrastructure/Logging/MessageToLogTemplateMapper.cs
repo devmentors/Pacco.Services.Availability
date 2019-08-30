@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Convey.Logging.CQRS;
 using Pacco.Services.Availability.Application.Commands;
+using Pacco.Services.Availability.Application.Events.External;
 using Pacco.Services.Availability.Application.Exceptions;
 
 namespace Pacco.Services.Availability.Infrastructure.Logging
@@ -26,8 +27,8 @@ namespace Pacco.Services.Availability.Infrastructure.Logging
                 {typeof(ReleaseResource), new HandlerLogTemplate { After = "Released a resource with id: {ResourceId}."}},
                 {typeof(ReserveResource), new HandlerLogTemplate { After = "Reserved a resource with id: {ResourceId} " +
                                                                           "priority: {Priority}, date: {DateTime}."}},
+                {typeof(VehicleDeleted), new HandlerLogTemplate{ Before = "Vehicle with id: {VehicleId} has been deleted."}}, 
             };
-        
         
         public HandlerLogTemplate Map<TMessage>(TMessage message) where TMessage : class
         {
