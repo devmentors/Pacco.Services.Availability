@@ -19,6 +19,26 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
                     var command = (ReserveResource) message;
                     return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message, ex.Code);
                 }
+                
+                case CustomerNotFoundException ex:
+                    switch (message)
+                    {
+                        case ReserveResource command:
+                            return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message,
+                                ex.Code);
+                    }
+
+                    break;
+                
+                case InvalidCustomerStateException ex:
+                    switch (message)
+                    {
+                        case ReserveResource command:
+                            return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message,
+                                ex.Code);
+                    }
+
+                    break;
 
                 case ResourceNotFoundException ex:
                 {
@@ -27,11 +47,23 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
                         case DeleteResource command:
                             return new DeleteResourceRejected(command.ResourceId, ex.Message, ex.Code);
                         case ReserveResource command:
-                            return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message, ex.Code);
+                            return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message,
+                                ex.Code);
                         case ReleaseResource command:
-                            return new ReleaseResourceRejected(command.ResourceId, command.DateTime, ex.Message, ex.Code);
+                            return new ReleaseResourceRejected(command.ResourceId, command.DateTime, ex.Message,
+                                ex.Code);
                     }
                 }
+                    break;
+
+                case UnauthorizedResourceAccessException ex:
+                    switch (message)
+                    {
+                        case ReserveResource command:
+                            return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message,
+                                ex.Code);
+                    }
+
                     break;
             }
 

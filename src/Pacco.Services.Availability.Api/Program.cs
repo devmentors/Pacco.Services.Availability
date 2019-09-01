@@ -44,7 +44,7 @@ namespace Pacco.Services.Availability.Api
                         .Get<GetResourceReservation, ResourceDto>("resources/{resourceId}")
                         .Post<AddResource>("resources",
                             afterDispatch: (cmd, ctx) => ctx.Response.Created($"resources/{cmd.ResourceId}"))
-                        .Post<ReserveResource>("resources/{resourceId}/reservations")
+                        .Post<ReserveResource>("resources/{resourceId}/reservations/{dateTime}")
                         .Delete<ReleaseResource>("resources/{resourceId}/reservations/{dateTime}")
                         .Delete<DeleteResource>("resources/{resourceId}")))
                 .UseLogging()

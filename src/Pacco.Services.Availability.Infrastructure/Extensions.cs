@@ -22,6 +22,7 @@ using Pacco.Services.Availability.Application;
 using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Application.Events.External;
 using Pacco.Services.Availability.Application.Services;
+using Pacco.Services.Availability.Application.Services.Clients;
 using Pacco.Services.Availability.Core.Repositories;
 using Pacco.Services.Availability.Infrastructure.Contexts;
 using Pacco.Services.Availability.Infrastructure.Exceptions;
@@ -30,6 +31,7 @@ using Pacco.Services.Availability.Infrastructure.Logging;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
 using Pacco.Services.Availability.Infrastructure.Mongo.Repositories;
 using Pacco.Services.Availability.Infrastructure.Services;
+using Pacco.Services.Availability.Infrastructure.Services.Clients;
 
 namespace Pacco.Services.Availability.Infrastructure
 {
@@ -40,6 +42,7 @@ namespace Pacco.Services.Availability.Infrastructure
             builder.Services.AddSingleton<IEventMapper, EventMapper>();
             builder.Services.AddTransient<IMessageBroker, MessageBroker>();
             builder.Services.AddTransient<IResourcesRepository, ResourcesMongoRepository>();
+            builder.Services.AddTransient<ICustomersServiceClient, CustomersServiceClient>();
             builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
             builder.Services.AddTransient<IAppContextFactory, AppContextFactory>();
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
