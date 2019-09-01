@@ -21,15 +21,16 @@ namespace Pacco.Services.Availability.Infrastructure.Jaeger
         
         public async Task HandleAsync(TCommand command)
         {
-            using (var scope = BuildScope(command))
+            var commandName = ToUnderscoreCase(command.GetType().Name);
+            using (var scope = BuildScope(commandName))
             {
                 var span = scope.Span;
                 
                 try
                 {
-                    span.Log($"Handling message {command.GetType().Name}");
+                    span.Log($"Handling a message: {commandName}");
                     await _handler.HandleAsync(command);
-                    span.Log($"Handled message {command.GetType().Name}");
+                    span.Log($"Handled a message: {commandName}");
                 }
                 catch (Exception e)
                 {
@@ -40,12 +41,14 @@ namespace Pacco.Services.Availability.Infrastructure.Jaeger
             }
         }
 
-        private IScope BuildScope(TCommand command)
-            => _tracer
-                .BuildSpan($"handling-{ToUnderscoreCase(command.GetType().Name)}")
-                .WithTag("message-type", nameof(ReserveResource))
+        private IScope BuildScope(string commandName)
+        {
+            return _tracer
+                .BuildSpan($"handling-{commandName}")
+                .WithTag("message-type", commandName)
                 .AddReference(References.ChildOf, _tracer.ActiveSpan.Context)
                 .StartActive(true);
+        }
         
         private static string ToUnderscoreCase(string str)
             => string

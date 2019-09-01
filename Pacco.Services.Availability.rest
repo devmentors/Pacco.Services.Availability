@@ -4,6 +4,9 @@
 @dateTime = 2019-10-10
 
 ###
+GET {{url}}/resources
+
+###
 GET {{url}}/resources/{{resourceId}}
 
 ###

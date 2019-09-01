@@ -9,9 +9,9 @@ namespace Pacco.Services.Availability.Infrastructure.Jaeger
     {
         public static IConveyBuilder AddJaegerDecorators(this IConveyBuilder builder)
         {
-            builder.Services.Decorate(typeof(ICommandHandler<ReserveResource>), typeof(JaegerCommandHandlerDecorator<ReserveResource>));
+            builder.Services.Decorate(typeof(ICommandHandler<ReserveResource>),
+                typeof(JaegerCommandHandlerDecorator<ReserveResource>));
             return builder;
         }
-        
     }
 }

@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
-using Microsoft.Extensions.Logging;
 using Pacco.Services.Availability.Application.Commands;
 
 namespace Pacco.Services.Availability.Application.Events.External.Handlers

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Convey;
 using Convey.Configurations.Vault;
 using Convey.Docs.Swagger;
@@ -41,7 +42,8 @@ namespace Pacco.Services.Availability.Api
                     .UseSwaggerDocs()
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
-                        .Get<GetResourceReservation, ResourceDto>("resources/{resourceId}")
+                        .Get<GetResources, IEnumerable<ResourceDto>>("resources")
+                        .Get<GetResource, ResourceDto>("resources/{resourceId}")
                         .Post<AddResource>("resources",
                             afterDispatch: (cmd, ctx) => ctx.Response.Created($"resources/{cmd.ResourceId}"))
                         .Post<ReserveResource>("resources/{resourceId}/reservations/{dateTime}")
