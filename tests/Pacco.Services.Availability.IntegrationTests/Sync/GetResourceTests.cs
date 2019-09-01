@@ -15,13 +15,13 @@ using Xunit;
 
 namespace Pacco.Services.Availability.IntegrationTests.Sync
 {
-    public class GetResourceReservationTests : IDisposable
+    public class GetResourceTests : IDisposable
     {
         Task<HttpResponseMessage> Act()
             => _httpClient.GetAsync($"resources/{ResourceId}");
 
         [Fact]
-        public async Task GetResourceReservation_Endpoint_Should_Return_NotFound_Http_Status_Code_If_No_Resource_Is_Found()
+        public async Task GetResource_Endpoint_Should_Return_NotFound_Http_Status_Code_If_No_Resource_Is_Found()
         {
             var response = await Act();
 
@@ -30,7 +30,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Sync
         }
         
         [Fact]
-        public async Task GetResourceReservation_Endpoint_Should_Return_Success_Http_Status_Code_If_Resource_Is_Found()
+        public async Task GetResource_Endpoint_Should_Return_Success_Http_Status_Code_If_Resource_Is_Found()
         {
             await InsertResourceAsync();
             
@@ -41,7 +41,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Sync
         }
         
         [Fact]
-        public async Task GetResourceReservation_Endpoint_Should_Return_Dto_With_Correct_Data()
+        public async Task GetResource_Endpoint_Should_Return_Dto_With_Correct_Data()
         {
             await InsertResourceAsync();
             
@@ -86,7 +86,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Sync
             return JsonConvert.DeserializeObject<ResourceDto>(json);
         }
         
-        public GetResourceReservationTests()
+        public GetResourceTests()
         {
             _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("resource-test-db", 
                 "Resources");
