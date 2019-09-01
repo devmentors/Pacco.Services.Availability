@@ -3,6 +3,7 @@ using Convey.CQRS.Events;
 
 namespace Pacco.Services.Availability.Application.Events
 {
+    [Contract]
     public class ResourceReservationCanceled : IEvent
     {
         public Guid ResourceId { get; }

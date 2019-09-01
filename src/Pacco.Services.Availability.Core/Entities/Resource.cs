@@ -26,9 +26,9 @@ namespace Pacco.Services.Availability.Core.Entities
 
         public static Resource Create(Guid id, IEnumerable<Reservation> reservations = null)
         {
-            var availability = new Resource(id, reservations);
-            availability.AddEvent(new ResourceCreated(availability));
-            return availability;
+            var resource = new Resource(id, reservations);
+            resource.AddEvent(new ResourceCreated(resource));
+            return resource;
         }
 
         public void AddReservation(Reservation reservation)

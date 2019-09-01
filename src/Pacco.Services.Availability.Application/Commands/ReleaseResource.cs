@@ -3,6 +3,7 @@ using Convey.CQRS.Commands;
 
 namespace Pacco.Services.Availability.Application.Commands
 {
+    [Contract]
     public class ReleaseResource : ICommand
     {
         public Guid ResourceId { get; }
