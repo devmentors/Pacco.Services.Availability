@@ -42,11 +42,18 @@ namespace Pacco.Services.Availability.Infrastructure.Jaeger
         }
 
         private IScope BuildScope(string commandName)
-            => _tracer
+        {
+            var scope = _tracer
                 .BuildSpan($"handling-{commandName}")
-                .WithTag("message-type", commandName)
-                .AddReference(References.ChildOf, _tracer.ActiveSpan.Context)
-                .StartActive(true);
+                .WithTag("message-type", commandName);
+
+            if (!(_tracer.ActiveSpan is null))
+            {
+                scope.AddReference(References.ChildOf, _tracer.ActiveSpan.Context);
+            }
+
+            return scope.StartActive(true);
+        }
 
         private static string ToUnderscoreCase(string str)
             => string
