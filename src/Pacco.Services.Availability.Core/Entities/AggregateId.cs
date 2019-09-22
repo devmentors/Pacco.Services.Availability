@@ -45,5 +45,7 @@ namespace Pacco.Services.Availability.Core.Entities
 
         public static implicit operator AggregateId(Guid id)
             => new AggregateId(id);
+        
+        public override string ToString() => Value.ToString();
     }
 }
