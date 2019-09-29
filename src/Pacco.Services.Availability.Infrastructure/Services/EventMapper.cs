@@ -4,7 +4,6 @@ using Convey.CQRS.Events;
 using Pacco.Services.Availability.Application.Events;
 using Pacco.Services.Availability.Application.Services;
 using Pacco.Services.Availability.Core.Events;
-using ReservationCanceled = Pacco.Services.Availability.Core.Events.ReservationCanceled;
 using ResourceDeleted = Pacco.Services.Availability.Core.Events.ResourceDeleted;
 
 namespace Pacco.Services.Availability.Infrastructure.Services
@@ -20,9 +19,6 @@ namespace Pacco.Services.Availability.Infrastructure.Services
             {
                 case ResourceCreated e: return new ResourceAdded(e.Resource.Id);
                 case ResourceDeleted e: return new Application.Events.ResourceDeleted(e.Resource.Id);
-                case ReservationAdded e: return new ResourceReserved(e.Resource.Id, e.Reservation.DateTime);
-                case ReservationReleased e: return new ResourceReleased(e.Resource.Id, e.Reservation.DateTime);
-                case ReservationCanceled e: return new ResourceReservationCanceled(e.Resource.Id, e.Reservation.DateTime);
             }
             return null;
         }

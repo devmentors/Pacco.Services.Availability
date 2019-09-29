@@ -9,7 +9,7 @@ namespace Pacco.Services.Availability.Infrastructure.Logging
     {
         public static IConveyBuilder AddHandlersLogging(this IConveyBuilder builder)
         {
-            var assembly = typeof(AddResource).Assembly;
+            var assembly = typeof(DeleteResource).Assembly;
             
             builder.Services.AddSingleton<IMessageToLogTemplateMapper>(new MessageToLogTemplateMapper());
             

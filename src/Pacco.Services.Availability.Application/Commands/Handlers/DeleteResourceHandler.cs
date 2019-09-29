@@ -24,7 +24,6 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
         public async Task HandleAsync(DeleteResource command)
         {
             var resource = await _repository.GetAsync(command.ResourceId);
-            
             if (resource is null)
             {
                 throw new ResourceNotFoundException(command.ResourceId);
