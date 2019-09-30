@@ -17,7 +17,6 @@ namespace Pacco.Services.Availability.Infrastructure.Services
         {
             switch (@event)
             {
-                case ResourceCreated e: return new ResourceAdded(e.Resource.Id);
                 case ResourceDeleted e: return new Application.Events.ResourceDeleted(e.Resource.Id);
             }
             return null;
