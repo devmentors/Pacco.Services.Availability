@@ -1,19 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Convey.MessageBrokers;
+using Convey;
 using Pacco.Services.Availability.Infrastructure.Contexts;
-using RawRabbit;
-using RawRabbit.Common;
-using RawRabbit.Configuration;
-using RawRabbit.Enrichers.MessageContext;
-using RawRabbit.Instantiation;
+using RabbitMQ.Client;
 
 namespace Pacco.Services.Availability.IntegrationTests.Fixtures
 {
     public class RabbitMqFixture
     {
-        private readonly RawRabbit.Instantiation.Disposable.BusClient _client;
+        private IConnection _connection;
         private readonly string _defaultNamespace;
         private bool _disposed = false;
         
@@ -21,48 +17,49 @@ namespace Pacco.Services.Availability.IntegrationTests.Fixtures
         {
             _defaultNamespace = defaultNamespace;
             
-            _client = RawRabbitFactory.CreateSingleton(new RawRabbitOptions()
+            var connectionFactory = new ConnectionFactory
             {
-                ClientConfiguration = new RawRabbitConfiguration
-                {
-                    Hostnames = new List<string> { "localhost" }, // localhost
-                    VirtualHost = "/",
-                    Port = 5672,
-                    Username = "guest",
-                    Password = "guest",
-                },
-                DependencyInjection = ioc =>
-                {
-                    ioc.AddSingleton<INamingConventions>(new RabbitMqFixtureNamingConventions("availability"));
-                },
-                Plugins = p => p  
-                    .UseAttributeRouting()
-                    .UseRetryLater()
-                    .UseMessageContext<CorrelationContext>()
-                    .UseContextForwarding()
-            });
+                HostName = "localhost",
+                VirtualHost = "/",
+                Port = 5672,
+                UserName = "guest",
+                Password = "guest",
+                UseBackgroundThreadsForIO = true,
+                DispatchConsumersAsync = true,
+                Ssl = new SslOption()
+            };
+
+            _connection = connectionFactory.CreateConnection();
         }
 
         public async Task PublishAsync<TMessage>(TMessage message, string @namespace = null) where TMessage : class
         {
-            await _client.PublishAsync(message, ctx => 
-                ctx.UseMessageContext(new CorrelationContext()).UsePublishConfiguration(p => p.WithRoutingKey(GetRoutingKey(@message, @namespace))));
+            await Task.CompletedTask;
+//            await _client.PublishAsync(message, ctx => 
+//                ctx.UseMessageContext(new CorrelationContext()).UsePublishConfiguration(p => p.WithRoutingKey(GetRoutingKey(@message, @namespace))));
         }
         
         public async Task<TaskCompletionSource<TEntity>> SubscribeAndGetAsync<TMessage, TEntity>(
             Func<Guid, TaskCompletionSource<TEntity>, Task> onMessageReceived, Guid id)
         {
+            await Task.CompletedTask;
             var taskCompletionSource = new TaskCompletionSource<TEntity>();
-            var guid = Guid.NewGuid().ToString();
+            var queueName = Guid.NewGuid().ToString("N");
+//            using (var channel = _connection.CreateModel())
+//            {
+//                channel.QueueBind(queueName, conventions.Exchange, conventions.RoutingKey);
+//                channel.BasicQos(0, 1, false);
+//                
+//                await channel.SubscribeAsync<TMessage>(
+//                    async _ => await onMessageReceived(id, taskCompletionSource),
+//                    ctx => ctx.UseSubscribeConfiguration(cfg =>
+//                        cfg
+//                            .FromDeclaredQueue(
+//                                builder => builder
+//                                    .WithDurability(false)
+//                                    .WithName(guid))));
+//            }
             
-            await _client.SubscribeAsync<TMessage>(
-                async _ => await onMessageReceived(id, taskCompletionSource),
-                ctx => ctx.UseSubscribeConfiguration(cfg =>
-                    cfg
-                        .FromDeclaredQueue(
-                            builder => builder
-                                .WithDurability(false)
-                                .WithName(guid))));
             return taskCompletionSource;
         }
         
@@ -82,7 +79,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Fixtures
             }
             if (disposing)
             {
-                _client.Dispose();
+                _connection.Dispose();
             }
 
             _disposed = true;

@@ -4,7 +4,7 @@ using Convey.MessageBrokers;
 
 namespace Pacco.Services.Availability.Application.Events.External
 {
-    [MessageNamespace("vehicles")]
+    [Message("vehicles")]
     public class VehicleDeleted : IEvent
     {
         public Guid VehicleId { get; }

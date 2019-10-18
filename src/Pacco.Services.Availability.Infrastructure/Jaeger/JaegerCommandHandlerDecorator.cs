@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using OpenTracing;
 using OpenTracing.Tag;
-using Pacco.Services.Availability.Application.Commands;
 
 namespace Pacco.Services.Availability.Infrastructure.Jaeger
 {

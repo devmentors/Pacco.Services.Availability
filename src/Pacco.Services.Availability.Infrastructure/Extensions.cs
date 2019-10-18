@@ -53,7 +53,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddHttpClient()
                 .AddConsul()
                 .AddFabio()
-                .AddRabbitMq<CorrelationContext>(plugins: p => p.RegisterJaeger())
+                .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
                 .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
                 .AddMongo()
                 .AddMetrics()
