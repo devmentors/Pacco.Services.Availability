@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Convey;
-using Pacco.Services.Availability.Infrastructure.Contexts;
 using RabbitMQ.Client;
 
 namespace Pacco.Services.Availability.IntegrationTests.Fixtures
