@@ -12,7 +12,7 @@
     <PackageReference Include="Convey.WebApi" Version="0.3.*" />
     <PackageReference Include="Convey.WebApi.CQRS" Version="0.3.*" />
     <PackageReference Include="Convey.WebApi.Swagger" Version="0.3.*" />
-    <PackageReference Include="OpenTracing.Contrib.NetCore" Version="0.6.0" />
+    <PackageReference Include="OpenTracing.Contrib.NetCore" Version="0.6.2" />
   </ItemGroup>
 
   <ItemGroup>
