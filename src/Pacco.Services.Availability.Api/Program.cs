@@ -29,7 +29,6 @@ namespace Pacco.Services.Availability.Api
         public static IWebHostBuilder GetWebHostBuilder(string[] args)
             => WebHost.CreateDefaultBuilder(args)
                 .ConfigureServices(services => services
-                    .Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; })
                     .AddOpenTracing()
                     .AddConvey()
                     .AddWebApi()

@@ -9,6 +9,7 @@ using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.RabbitMQ;
 using Convey.Metrics.AppMetrics;
 using Convey.Persistence.MongoDB;
+using Convey.Persistence.Redis;
 using Convey.Tracing.Jaeger;
 using Convey.Tracing.Jaeger.RabbitMQ;
 using Convey.WebApi;
@@ -40,7 +41,6 @@ namespace Pacco.Services.Availability.Infrastructure
     {
         public static IConveyBuilder AddInfrastructure(this IConveyBuilder builder)
         {
-            builder.Services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
             builder.Services.AddSingleton<IEventMapper, EventMapper>();
             builder.Services.AddTransient<IMessageBroker, MessageBroker>();
             builder.Services.AddTransient<IResourcesRepository, ResourcesMongoRepository>();
@@ -58,6 +58,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
                 .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
                 .AddMongo()
+                .AddRedis()
                 .AddMetrics()
                 .AddJaeger()
                 .AddJaegerDecorators()
@@ -71,7 +72,6 @@ namespace Pacco.Services.Availability.Infrastructure
                 .UseJaeger()
                 .UseInitializers()
                 .UsePublicContracts<ContractAttribute>()
-                .UseConsul()
                 .UseMetrics()
                 .UseRabbitMq()
                 .SubscribeCommand<AddResource>()
