@@ -2,6 +2,7 @@
 using System.Linq;
 using Convey;
 using Convey.CQRS.Commands;
+using Convey.CQRS.Events;
 using Convey.CQRS.Queries;
 using Convey.Discovery.Consul;
 using Convey.HTTP;
@@ -52,6 +53,7 @@ namespace Pacco.Services.Availability.Infrastructure
             builder.Services.AddTransient<IAppContextFactory, AppContextFactory>();
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
             builder.Services.Decorate(typeof(ICommandHandler<>), typeof(MongoTransactionCommandHandlerDecorator<>));
+            builder.Services.Decorate(typeof(IEventHandler<>), typeof(MongoTransactionEventHandlerDecorator<>));
 
             return builder
                 .AddQueryHandlers()
