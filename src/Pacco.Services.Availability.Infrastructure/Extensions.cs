@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Convey;
+using Convey.CQRS.Commands;
 using Convey.CQRS.Queries;
 using Convey.Discovery.Consul;
 using Convey.HTTP;
@@ -31,6 +32,7 @@ using Pacco.Services.Availability.Infrastructure.Contexts;
 using Pacco.Services.Availability.Infrastructure.Exceptions;
 using Pacco.Services.Availability.Infrastructure.Jaeger;
 using Pacco.Services.Availability.Infrastructure.Logging;
+using Pacco.Services.Availability.Infrastructure.Mongo.Decorators;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
 using Pacco.Services.Availability.Infrastructure.Mongo.Repositories;
 using Pacco.Services.Availability.Infrastructure.Services;
@@ -49,6 +51,7 @@ namespace Pacco.Services.Availability.Infrastructure
             builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
             builder.Services.AddTransient<IAppContextFactory, AppContextFactory>();
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
+            builder.Services.Decorate(typeof(ICommandHandler<>), typeof(MongoTransactionCommandHandlerDecorator<>));
 
             return builder
                 .AddQueryHandlers()

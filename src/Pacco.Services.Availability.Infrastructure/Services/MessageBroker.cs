@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,6 +69,8 @@ namespace Pacco.Services.Availability.Infrastructure.Services
 
                 await _outbox.SendAsync(@event, correlationId: correlationId, spanContext: spanContext,
                     messageContext: correlationContext);
+                
+                throw new Exception("wolololo");
             }
         }
     }
