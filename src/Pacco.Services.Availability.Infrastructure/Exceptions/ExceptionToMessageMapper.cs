@@ -1,4 +1,5 @@
 using System;
+using Convey.CQRS.Events;
 using Convey.MessageBrokers.RabbitMQ;
 using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Application.Events.Rejected;
@@ -10,64 +11,45 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
     public class ExceptionToMessageMapper : IExceptionToMessageMapper
     {
         public object Map(Exception exception, object message)
-        {
-            switch (exception)
+            => exception switch
             {
-                case ResourceAlreadyExistsException ex: return new AddResourceRejected(ex.Id, ex.Message, ex.Code);
-                case CannotExpropriateReservationException ex:
+                ResourceAlreadyExistsException ex => (IRejectedEvent) new AddResourceRejected(ex.Id, ex.Message,
+                    ex.Code),
+                CannotExpropriateReservationException ex => message switch
                 {
-                    var command = (ReserveResource) message;
-                    return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message, ex.Code);
-                }
-                
-                case CustomerNotFoundException ex:
-                    switch (message)
-                    {
-                        case ReserveResource command:
-                            return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message,
-                                ex.Code);
-                    }
-
-                    break;
-                
-                case InvalidCustomerStateException ex:
-                    switch (message)
-                    {
-                        case ReserveResource command:
-                            return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message,
-                                ex.Code);
-                    }
-
-                    break;
-
-                case ResourceNotFoundException ex:
+                    ReserveResource command => new ReserveResourceRejected(command.ResourceId, command.DateTime,
+                        ex.Message, ex.Code),
+                    _ => null
+                },
+                CustomerNotFoundException ex => message switch
                 {
-                    switch (message)
-                    {
-                        case DeleteResource command:
-                            return new DeleteResourceRejected(command.ResourceId, ex.Message, ex.Code);
-                        case ReserveResource command:
-                            return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message,
-                                ex.Code);
-                        case ReleaseResource command:
-                            return new ReleaseResourceRejected(command.ResourceId, command.DateTime, ex.Message,
-                                ex.Code);
-                    }
+                    ReserveResource command => new ReserveResourceRejected(command.ResourceId, command.DateTime,
+                        ex.Message, ex.Code),
+                    _ => null
+                },
+                InvalidCustomerStateException ex => message switch
+                {
+                    ReserveResource command => new ReserveResourceRejected(command.ResourceId, command.DateTime,
+                        ex.Message, ex.Code),
+                    _ => null
+                },
+                ResourceNotFoundException ex => message switch
+                {
+                    DeleteResource command => (IRejectedEvent) new DeleteResourceRejected(command.ResourceId,
+                        ex.Message, ex.Code),
+                    ReserveResource command => new ReserveResourceRejected(command.ResourceId, command.DateTime,
+                        ex.Message, ex.Code),
+                    ReleaseResource command => new ReleaseResourceRejected(command.ResourceId, command.DateTime,
+                        ex.Message, ex.Code),
+                    _ => null
+                },
+                UnauthorizedResourceAccessException ex => message switch
+                {
+                    ReserveResource command => new ReserveResourceRejected(command.ResourceId, command.DateTime,
+                        ex.Message, ex.Code),
+                    _ => null
                 }
-                    break;
-
-                case UnauthorizedResourceAccessException ex:
-                    switch (message)
-                    {
-                        case ReserveResource command:
-                            return new ReserveResourceRejected(command.ResourceId, command.DateTime, ex.Message,
-                                ex.Code);
-                    }
-
-                    break;
-            }
-
-            return null;
-        }
+            };
+            
     }
 }
