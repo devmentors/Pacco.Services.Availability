@@ -7,10 +7,11 @@ using OpenTracing.Tag;
 
 namespace Pacco.Services.Availability.Infrastructure.Jaeger
 {
-    internal class JaegerCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand> where TCommand : class, ICommand
+    internal sealed class JaegerCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
+        where TCommand : class, ICommand
     {
-        private ICommandHandler<TCommand> _handler { get; }
-        private ITracer _tracer { get; }
+        private readonly ICommandHandler<TCommand> _handler;
+        private readonly ITracer _tracer;
 
         public JaegerCommandHandlerDecorator(ICommandHandler<TCommand> handler, ITracer tracer)
         {
@@ -21,22 +22,20 @@ namespace Pacco.Services.Availability.Infrastructure.Jaeger
         public async Task HandleAsync(TCommand command)
         {
             var commandName = ToUnderscoreCase(command.GetType().Name);
-            using (var scope = BuildScope(commandName))
-            {
-                var span = scope.Span;
+            using var scope = BuildScope(commandName);
+            var span = scope.Span;
 
-                try
-                {
-                    span.Log($"Handling a message: {commandName}");
-                    await _handler.HandleAsync(command);
-                    span.Log($"Handled a message: {commandName}");
-                }
-                catch (Exception e)
-                {
-                    span.Log(e.Message);
-                    span.SetTag(Tags.Error, true);
-                    throw;
-                }
+            try
+            {
+                span.Log($"Handling a message: {commandName}");
+                await _handler.HandleAsync(command);
+                span.Log($"Handled a message: {commandName}");
+            }
+            catch (Exception e)
+            {
+                span.Log(e.Message);
+                span.SetTag(Tags.Error, true);
+                throw;
             }
         }
 

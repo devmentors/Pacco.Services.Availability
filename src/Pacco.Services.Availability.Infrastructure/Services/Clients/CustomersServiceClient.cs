@@ -6,7 +6,7 @@ using Pacco.Services.Availability.Application.Services.Clients;
 
 namespace Pacco.Services.Availability.Infrastructure.Services.Clients
 {
-    public class CustomersServiceClient : ICustomersServiceClient
+    internal sealed class CustomersServiceClient : ICustomersServiceClient
     {
         private readonly IHttpClient _httpClient;
         private readonly string _url;

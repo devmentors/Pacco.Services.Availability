@@ -3,7 +3,7 @@ using Pacco.Services.Availability.Application;
 
 namespace Pacco.Services.Availability.Infrastructure.Contexts
 {
-    internal class AppContext : IAppContext
+    internal sealed class AppContext : IAppContext
     {
         public string RequestId { get; }
         public IIdentityContext Identity { get; }

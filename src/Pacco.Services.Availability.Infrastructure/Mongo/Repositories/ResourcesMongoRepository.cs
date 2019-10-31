@@ -8,7 +8,7 @@ using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
 
 namespace Pacco.Services.Availability.Infrastructure.Mongo.Repositories
 {
-    internal class ResourcesMongoRepository : IResourcesRepository
+    internal sealed class ResourcesMongoRepository : IResourcesRepository
     {
         private readonly IMongoRepository<ResourceDocument, Guid> _repository;
 

@@ -1,7 +1,6 @@
 using Convey;
 using Convey.CQRS.Commands;
 using Microsoft.Extensions.DependencyInjection;
-using Pacco.Services.Availability.Application.Commands;
 
 namespace Pacco.Services.Availability.Infrastructure.Jaeger
 {
@@ -9,8 +8,8 @@ namespace Pacco.Services.Availability.Infrastructure.Jaeger
     {
         public static IConveyBuilder AddJaegerDecorators(this IConveyBuilder builder)
         {
-            builder.Services.Decorate(typeof(ICommandHandler<ReserveResource>),
-                typeof(JaegerCommandHandlerDecorator<ReserveResource>));
+            builder.Services.Decorate(typeof(ICommandHandler<>), typeof(JaegerCommandHandlerDecorator<>));
+
             return builder;
         }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Pacco.Services.Availability.Infrastructure.Contexts
 {
-    internal class CorrelationContext
+    internal sealed class CorrelationContext
     {
         public string CorrelationId { get; set; }
         public string SpanContext { get; set; }

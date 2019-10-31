@@ -8,7 +8,7 @@ using Pacco.Services.Availability.Core.Exceptions;
 
 namespace Pacco.Services.Availability.Infrastructure.Exceptions
 {
-    public class ExceptionToMessageMapper : IExceptionToMessageMapper
+    internal sealed class ExceptionToMessageMapper : IExceptionToMessageMapper
     {
         public object Map(Exception exception, object message)
             => exception switch
@@ -48,8 +48,8 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
                     ReserveResource command => new ReserveResourceRejected(command.ResourceId, command.DateTime,
                         ex.Message, ex.Code),
                     _ => null
-                }
+                },
+                _ => null
             };
-            
     }
 }

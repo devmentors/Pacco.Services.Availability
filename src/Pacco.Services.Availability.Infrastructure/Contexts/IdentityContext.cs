@@ -4,7 +4,7 @@ using Pacco.Services.Availability.Application;
 
 namespace Pacco.Services.Availability.Infrastructure.Contexts
 {
-    internal class IdentityContext : IIdentityContext
+    internal sealed class IdentityContext : IIdentityContext
     {
         public Guid Id { get; }
         public string Role { get; } = string.Empty;
