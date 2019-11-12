@@ -1,24 +1,23 @@
-using System;
 using System.Threading.Tasks;
 using Convey.CQRS.Queries;
-using Convey.Persistence.MongoDB;
+using MongoDB.Driver;
 using Pacco.Services.Availability.Application.DTO;
 using Pacco.Services.Availability.Application.Queries;
-using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
 
 namespace Pacco.Services.Availability.Infrastructure.Mongo.Queries.Handlers
 {
     internal sealed class GetResourceHandler : IQueryHandler<GetResource, ResourceDto>
     {
-        private readonly IMongoRepository<ResourceDocument, Guid> _repository;
+        private readonly IMongoDatabase _database;
 
-        public GetResourceHandler(IMongoRepository<ResourceDocument, Guid> repository)
-            => _repository = repository;
-
-        public async Task<ResourceDto> HandleAsync(GetResource query)
+        public GetResourceHandler(IMongoDatabase database)
         {
-            var document = await _repository.GetAsync(r => r.Id == query.ResourceId);
-            return document?.AsDto();
+            _database = database;
         }
+
+        public Task<ResourceDto> HandleAsync(GetResource query)
+            => _database.GetCollection<ResourceDto>("ResourcesDto")
+                .Find(r => r.Id == query.ResourceId)
+                .SingleOrDefaultAsync();
     }
 }

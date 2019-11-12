@@ -3,7 +3,7 @@ using Convey;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
 using Microsoft.Extensions.DependencyInjection;
-using Pacco.Services.Availability.Application.Events.Domain;
+using Pacco.Services.Availability.Application.Events;
 
 namespace Pacco.Services.Availability.Application
 {

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Convey.CQRS.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Pacco.Services.Availability.Application.Events.Domain;
+using Pacco.Services.Availability.Application.Events;
 using Pacco.Services.Availability.Application.Services;
 using Pacco.Services.Availability.Core.Events;
 
@@ -33,14 +33,27 @@ namespace Pacco.Services.Availability.Infrastructure.Services
                 return;
             }
 
-            _logger.LogInformation($"Processing domain events...");
+            _logger.LogInformation("Processing domain events...");
+            var integrationEvents = await HandleDomainEvents(events);
+            if (!integrationEvents.Any())
+            {
+                return;
+            }
+
+            _logger.LogInformation("Processing integration events...");
+            await _messageBroker.PublishAsync(integrationEvents);
+        }
+
+        private async Task<List<IEvent>> HandleDomainEvents(IEnumerable<IDomainEvent> events)
+        {
             var integrationEvents = new List<IEvent>();
             using var scope = _serviceScopeFactory.CreateScope();
             foreach (var @event in events)
             {
                 var eventType = @event.GetType();
-                var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(eventType);
                 _logger.LogInformation($"Handling domain event: {eventType.Name}");
+
+                var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(eventType);
                 dynamic handlers = scope.ServiceProvider.GetServices(handlerType);
                 foreach (var handler in handlers)
                 {
@@ -56,13 +69,7 @@ namespace Pacco.Services.Availability.Infrastructure.Services
                 integrationEvents.Add(integrationEvent);
             }
 
-            if (!integrationEvents.Any())
-            {
-                return;
-            }
-
-            _logger.LogInformation("Processing integration events...");
-            await _messageBroker.PublishAsync(integrationEvents);
+            return integrationEvents;
         }
     }
 }
