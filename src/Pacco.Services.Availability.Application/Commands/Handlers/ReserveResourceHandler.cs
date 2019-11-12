@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Pacco.Services.Availability.Application.Exceptions;
@@ -13,17 +12,15 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
     {
         private readonly IResourcesRepository _repository;
         private readonly ICustomersServiceClient _customersServiceClient;
-        private readonly IMessageBroker _messageBroker;
-        private readonly IEventMapper _eventMapper;
+        private readonly IEventProcessor _eventProcessor;
         private readonly IAppContext _appContext;
 
         public ReserveResourceHandler(IResourcesRepository repository, ICustomersServiceClient customersServiceClient,
-            IMessageBroker messageBroker, IEventMapper eventMapper, IAppContext appContext)
+            IEventProcessor eventProcessor, IAppContext appContext)
         {
             _repository = repository;
             _customersServiceClient = customersServiceClient;
-            _messageBroker = messageBroker;
-            _eventMapper = eventMapper;
+            _eventProcessor = eventProcessor;
             _appContext = appContext;
         }
 
@@ -55,8 +52,7 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
             var reservation = new Reservation(command.DateTime, command.Priority);
             resource.AddReservation(reservation);
             await _repository.UpdateAsync(resource);
-            var events = _eventMapper.MapAll(resource.Events);
-            await _messageBroker.PublishAsync(events.ToArray());
+            await _eventProcessor.ProcessAsync(resource.Events);
         }
     }
 }

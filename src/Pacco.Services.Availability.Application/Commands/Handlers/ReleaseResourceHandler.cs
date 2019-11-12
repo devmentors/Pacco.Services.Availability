@@ -10,15 +10,12 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
     internal sealed class ReleaseResourceHandler : ICommandHandler<ReleaseResource>
     {
         private readonly IResourcesRepository _repository;
-        private readonly IMessageBroker _messageBroker;
-        private readonly IEventMapper _eventMapper;
+        private readonly IEventProcessor _eventProcessor;
 
-        public ReleaseResourceHandler(IResourcesRepository repository, IMessageBroker messageBroker,
-            IEventMapper eventMapper)
+        public ReleaseResourceHandler(IResourcesRepository repository, IEventProcessor eventProcessor)
         {
             _repository = repository;
-            _messageBroker = messageBroker;
-            _eventMapper = eventMapper;
+            _eventProcessor = eventProcessor;
         }
         
         public async Task HandleAsync(ReleaseResource command)
@@ -33,8 +30,7 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
             var reservation = resource.Reservations.FirstOrDefault(r => r.DateTime.Date == command.DateTime.Date);
             resource.ReleaseReservation(reservation);
             await _repository.UpdateAsync(resource);
-            var events = _eventMapper.MapAll(resource.Events);
-            await _messageBroker.PublishAsync(events.ToArray());
+            await _eventProcessor.ProcessAsync(resource.Events);
         }
     }
 }

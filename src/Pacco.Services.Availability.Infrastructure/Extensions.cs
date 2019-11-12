@@ -22,7 +22,6 @@ using Convey.WebApi.Swagger;
 using Elasticsearch.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Pacco.Services.Availability.Application;
@@ -54,6 +53,7 @@ namespace Pacco.Services.Availability.Infrastructure
             builder.Services.AddTransient<ICustomersServiceClient, CustomersServiceClient>();
             builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
             builder.Services.AddTransient<IAppContextFactory, AppContextFactory>();
+            builder.Services.AddTransient<IEventProcessor, EventProcessor>();
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
             builder.Services.Decorate(typeof(ICommandHandler<>), typeof(MongoTransactionCommandHandlerDecorator<>));
             builder.Services.Decorate(typeof(IEventHandler<>), typeof(MongoTransactionEventHandlerDecorator<>));

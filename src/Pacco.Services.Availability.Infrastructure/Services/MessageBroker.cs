@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +7,7 @@ using Convey.MessageBrokers;
 using Convey.MessageBrokers.Outbox;
 using Convey.MessageBrokers.RabbitMQ;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using OpenTracing;
 using Pacco.Services.Availability.Application.Services;
 
@@ -19,25 +20,30 @@ namespace Pacco.Services.Availability.Infrastructure.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMessagePropertiesAccessor _messagePropertiesAccessor;
         private readonly ITracer _tracer;
+        private readonly ILogger<IMessageBroker> _logger;
         private readonly string _spanContextHeader;
 
         public MessageBroker(IMessageOutbox outbox, ICorrelationContextAccessor contextAccessor,
             IHttpContextAccessor httpContextAccessor, IMessagePropertiesAccessor messagePropertiesAccessor,
-            RabbitMqOptions options, ITracer tracer)
+            RabbitMqOptions options, ITracer tracer, ILogger<IMessageBroker> logger)
         {
             _outbox = outbox;
             _contextAccessor = contextAccessor;
             _httpContextAccessor = httpContextAccessor;
             _messagePropertiesAccessor = messagePropertiesAccessor;
             _tracer = tracer;
+            _logger = logger;
             _spanContextHeader = string.IsNullOrWhiteSpace(options.SpanContextHeader)
                 ? "span_context"
                 : options.SpanContextHeader;
         }
 
-        public async Task PublishAsync(params IEvent[] events)
+        public Task PublishAsync(params IEvent[] events)
+            => PublishAsync(events.AsEnumerable());
+
+        public async Task PublishAsync(IEnumerable<IEvent> events)
         {
-            if (events is null || !events.Any())
+            if (events is null)
             {
                 return;
             }
@@ -48,7 +54,7 @@ namespace Pacco.Services.Availability.Infrastructure.Services
             var messageProperties = _messagePropertiesAccessor.MessageProperties;
             var correlationId = _messagePropertiesAccessor.MessageProperties?.CorrelationId;
             var spanContext = string.Empty;
-            
+
             if (!(messageProperties is null) && messageProperties.Headers.TryGetValue(_spanContextHeader, out var span)
                                              && span is byte[] spanBytes)
             {
@@ -67,6 +73,7 @@ namespace Pacco.Services.Availability.Infrastructure.Services
                     continue;
                 }
 
+                _logger.LogInformation($"Handling integration event: {@event.GetType().Name}");
                 await _outbox.SendAsync(@event, correlationId: correlationId, spanContext: spanContext,
                     messageContext: correlationContext);
             }
