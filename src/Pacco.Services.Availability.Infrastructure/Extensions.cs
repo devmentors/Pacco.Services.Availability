@@ -26,6 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Pacco.Services.Availability.Application;
 using Pacco.Services.Availability.Application.Commands;
+using Pacco.Services.Availability.Application.Events;
 using Pacco.Services.Availability.Application.Events.External;
 using Pacco.Services.Availability.Application.Services;
 using Pacco.Services.Availability.Application.Services.Clients;
@@ -57,6 +58,11 @@ namespace Pacco.Services.Availability.Infrastructure
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
             builder.Services.Decorate(typeof(ICommandHandler<>), typeof(MongoTransactionCommandHandlerDecorator<>));
             builder.Services.Decorate(typeof(IEventHandler<>), typeof(MongoTransactionEventHandlerDecorator<>));
+            
+            builder.Services.Scan(s => s.FromAssemblies(AppDomain.CurrentDomain.GetAssemblies())
+                .AddClasses(c => c.AssignableTo(typeof(IDomainEventHandler<>)))
+                .AsImplementedInterfaces()
+                .WithTransientLifetime());
 
             return builder
                 .AddQueryHandlers()

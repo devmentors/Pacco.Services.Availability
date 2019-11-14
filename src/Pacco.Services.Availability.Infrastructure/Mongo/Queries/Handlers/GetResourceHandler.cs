@@ -3,6 +3,7 @@ using Convey.CQRS.Queries;
 using MongoDB.Driver;
 using Pacco.Services.Availability.Application.DTO;
 using Pacco.Services.Availability.Application.Queries;
+using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
 
 namespace Pacco.Services.Availability.Infrastructure.Mongo.Queries.Handlers
 {
@@ -15,9 +16,13 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Queries.Handlers
             _database = database;
         }
 
-        public Task<ResourceDto> HandleAsync(GetResource query)
-            => _database.GetCollection<ResourceDto>("ResourcesDto")
+        public async Task<ResourceDto> HandleAsync(GetResource query)
+        {
+            var document = await _database.GetCollection<ResourceDocument>("Resources")
                 .Find(r => r.Id == query.ResourceId)
                 .SingleOrDefaultAsync();
+            
+            return document?.AsDto();
+        }
     }
 }
