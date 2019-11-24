@@ -26,7 +26,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Async
 
             await Act(command);
             
-            var tcs = await _rabbitMqFixture.SubscribeAndGetAsync<ResourceAdded, ResourceDocument>(Exchange,
+            var tcs = _rabbitMqFixture.SubscribeAndGet<ResourceAdded, ResourceDocument>(Exchange,
                 _mongoDbFixture.GetAsync, command.ResourceId);
             
             var document = await tcs.Task;

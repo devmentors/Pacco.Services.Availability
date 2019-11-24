@@ -14,7 +14,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Fixtures
 {
     public class RabbitMqFixture
     {
-        private IConnection _connection;
+        private readonly IModel _channel;
         private readonly string _defaultNamespace;
         private bool _disposed = false;
         
@@ -34,16 +34,16 @@ namespace Pacco.Services.Availability.IntegrationTests.Fixtures
                 Ssl = new SslOption()
             };
 
-            _connection = connectionFactory.CreateConnection();
+            var connection = connectionFactory.CreateConnection();
+            _channel = connection.CreateModel();
         }
 
         public Task PublishAsync<TMessage>(TMessage message, string exchange = null) where TMessage : class
         {
-            using var channel = _connection.CreateModel();
             var routingKey = SnakeCase(message.GetType().Name);
             var json = JsonConvert.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(json);
-            channel.BasicPublish(exchange, routingKey, body: body, basicProperties: new BasicProperties
+            _channel.BasicPublish(exchange, routingKey, body: body, basicProperties: new BasicProperties
             {
                 Headers = new Dictionary<string, object>(),
                 MessageId = Guid.NewGuid().ToString(),
@@ -52,14 +52,12 @@ namespace Pacco.Services.Availability.IntegrationTests.Fixtures
             return Task.CompletedTask;
         }
         
-        public async Task<TaskCompletionSource<TEntity>> SubscribeAndGetAsync<TMessage, TEntity>(string exchange,
+        public TaskCompletionSource<TEntity> SubscribeAndGet<TMessage, TEntity>(string exchange,
             Func<Guid, TaskCompletionSource<TEntity>, Task> onMessageReceived, Guid id)
         {
-            await Task.CompletedTask;
             var taskCompletionSource = new TaskCompletionSource<TEntity>();
-            using var channel = _connection.CreateModel();
             
-            channel.ExchangeDeclare(exchange: exchange,
+            _channel.ExchangeDeclare(exchange: exchange,
                 durable: true,
                 autoDelete: false,
                 arguments: null,
@@ -67,16 +65,16 @@ namespace Pacco.Services.Availability.IntegrationTests.Fixtures
 
             var queue = $"test_{SnakeCase(typeof(TMessage).Name)}";
 
-            channel.QueueDeclare(queue: queue,
+            _channel.QueueDeclare(queue: queue,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null);
 
-            channel.QueueBind(queue, exchange, SnakeCase(typeof(TMessage).Name));
-            channel.BasicQos(0, 1, false);
+            _channel.QueueBind(queue, exchange, SnakeCase(typeof(TMessage).Name));
+            _channel.BasicQos(0, 1, false);
             
-            var consumer = new AsyncEventingBasicConsumer(channel);
+            var consumer = new AsyncEventingBasicConsumer(_channel);
             consumer.Received += async (model, ea) =>
             {
                 var body = ea.Body;
@@ -86,7 +84,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Fixtures
                 await onMessageReceived(id, taskCompletionSource);
             };
             
-            channel.BasicConsume(queue: queue,
+            _channel.BasicConsume(queue: queue,
                 autoAck: true,
                 consumer: consumer);
             
@@ -116,7 +114,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Fixtures
             }
             if (disposing)
             {
-                _connection.Dispose();
+                _channel.Dispose();
             }
 
             _disposed = true;
