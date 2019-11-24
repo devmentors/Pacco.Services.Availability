@@ -102,7 +102,7 @@ namespace Pacco.Services.Availability.Infrastructure
         }
 
         internal static CorrelationContext GetCorrelationContext(this IHttpContextAccessor accessor)
-            => accessor.HttpContext.Request.Headers.TryGetValue("Correlation-Context", out var json)
+            => accessor.HttpContext?.Request.Headers.TryGetValue("Correlation-Context", out var json) is true
                 ? JsonConvert.DeserializeObject<CorrelationContext>(json.FirstOrDefault())
                 : null;
     }

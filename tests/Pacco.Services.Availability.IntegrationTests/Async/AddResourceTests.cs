@@ -17,18 +17,18 @@ namespace Pacco.Services.Availability.IntegrationTests.Async
     public class AddResourceTests : IDisposable
     {
         Task Act(AddResource command)
-            => _rabbitMqFixture.PublishAsync(command);
+            => _rabbitMqFixture.PublishAsync(command, Exchange);
         
         [Fact]
         public async Task AddResource_Endpoint_Should_Add_Resource_With_Given_Id_To_Database()
         {
             var command = new AddResource(new Guid(ResourceId));
 
-            var tcs = await _rabbitMqFixture.SubscribeAndGetAsync<ResourceAdded, ResourceDocument>(_mongoDbFixture.GetAsync,
-                command.ResourceId);
-
             await Act(command);
-
+            
+            var tcs = await _rabbitMqFixture.SubscribeAndGetAsync<ResourceAdded, ResourceDocument>(Exchange,
+                _mongoDbFixture.GetAsync, command.ResourceId);
+            
             var document = await tcs.Task;
             
             document.ShouldNotBeNull();
@@ -42,6 +42,7 @@ namespace Pacco.Services.Availability.IntegrationTests.Async
         private readonly HttpClient _httpClient;
         
         private const string ResourceId = "587acaf9-629f-4896-a893-4e94ae628652";
+        private const string Exchange = "availability";
 
         private HttpContent GetHttpContent(AddResource command)
         {

@@ -1,7 +1,14 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using Convey;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Framing;
 
 namespace Pacco.Services.Availability.IntegrationTests.Fixtures
 {
@@ -30,36 +37,68 @@ namespace Pacco.Services.Availability.IntegrationTests.Fixtures
             _connection = connectionFactory.CreateConnection();
         }
 
-        public async Task PublishAsync<TMessage>(TMessage message, string @namespace = null) where TMessage : class
+        public Task PublishAsync<TMessage>(TMessage message, string exchange = null) where TMessage : class
         {
-            await Task.CompletedTask;
-//            await _client.PublishAsync(message, ctx => 
-//                ctx.UseMessageContext(new CorrelationContext()).UsePublishConfiguration(p => p.WithRoutingKey(GetRoutingKey(@message, @namespace))));
+            using var channel = _connection.CreateModel();
+            var routingKey = SnakeCase(message.GetType().Name);
+            var json = JsonConvert.SerializeObject(message);
+            var body = Encoding.UTF8.GetBytes(json);
+            channel.BasicPublish(exchange, routingKey, body: body, basicProperties: new BasicProperties
+            {
+                Headers = new Dictionary<string, object>(),
+                MessageId = Guid.NewGuid().ToString(),
+                CorrelationId = Guid.NewGuid().ToString()
+            });
+            return Task.CompletedTask;
         }
         
-        public async Task<TaskCompletionSource<TEntity>> SubscribeAndGetAsync<TMessage, TEntity>(
+        public async Task<TaskCompletionSource<TEntity>> SubscribeAndGetAsync<TMessage, TEntity>(string exchange,
             Func<Guid, TaskCompletionSource<TEntity>, Task> onMessageReceived, Guid id)
         {
             await Task.CompletedTask;
             var taskCompletionSource = new TaskCompletionSource<TEntity>();
-            var queueName = Guid.NewGuid().ToString("N");
-//            using (var channel = _connection.CreateModel())
-//            {
-//                channel.QueueBind(queueName, conventions.Exchange, conventions.RoutingKey);
-//                channel.BasicQos(0, 1, false);
-//                
-//                await channel.SubscribeAsync<TMessage>(
-//                    async _ => await onMessageReceived(id, taskCompletionSource),
-//                    ctx => ctx.UseSubscribeConfiguration(cfg =>
-//                        cfg
-//                            .FromDeclaredQueue(
-//                                builder => builder
-//                                    .WithDurability(false)
-//                                    .WithName(guid))));
-//            }
+            using var channel = _connection.CreateModel();
+            
+            channel.ExchangeDeclare(exchange: exchange,
+                durable: true,
+                autoDelete: false,
+                arguments: null,
+                type: "topic");
+
+            var queue = $"test_{SnakeCase(typeof(TMessage).Name)}";
+
+            channel.QueueDeclare(queue: queue,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+
+            channel.QueueBind(queue, exchange, SnakeCase(typeof(TMessage).Name));
+            channel.BasicQos(0, 1, false);
+            
+            var consumer = new AsyncEventingBasicConsumer(channel);
+            consumer.Received += async (model, ea) =>
+            {
+                var body = ea.Body;
+                var json = Encoding.UTF8.GetString(body);
+                var message = JsonConvert.DeserializeObject<TMessage>(json);
+
+                await onMessageReceived(id, taskCompletionSource);
+            };
+            
+            channel.BasicConsume(queue: queue,
+                autoAck: true,
+                consumer: consumer);
             
             return taskCompletionSource;
         }
+        
+        private static string SnakeCase(string value)
+            => string.Concat(value.Select((x, i) =>
+                    i > 0 && value[i - 1] != '.' && value[i - 1] != '/' && char.IsUpper(x) ? "_" + x : x.ToString()))
+                .ToLowerInvariant();
+
+        
         
         private string GetRoutingKey<T>(T message, string @namespace = null)
         {
