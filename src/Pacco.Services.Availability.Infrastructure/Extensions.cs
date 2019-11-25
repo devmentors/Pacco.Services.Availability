@@ -88,7 +88,7 @@ namespace Pacco.Services.Availability.Infrastructure
             app.UseErrorHandler()
                 .UseSwaggerDocs()
                 .UseJaeger()
-                .UseInitializers()
+                .UseConvey()
                 .UsePublicContracts<ContractAttribute>()
                 .UseMetrics()
                 .UseRabbitMq()

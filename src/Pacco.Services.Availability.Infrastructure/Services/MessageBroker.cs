@@ -15,6 +15,7 @@ namespace Pacco.Services.Availability.Infrastructure.Services
 {
     internal sealed class MessageBroker : IMessageBroker
     {
+        private readonly IBusPublisher _busPublisher;
         private readonly IMessageOutbox _outbox;
         private readonly ICorrelationContextAccessor _contextAccessor;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -23,10 +24,12 @@ namespace Pacco.Services.Availability.Infrastructure.Services
         private readonly ILogger<IMessageBroker> _logger;
         private readonly string _spanContextHeader;
 
-        public MessageBroker(IMessageOutbox outbox, ICorrelationContextAccessor contextAccessor,
-            IHttpContextAccessor httpContextAccessor, IMessagePropertiesAccessor messagePropertiesAccessor,
-            RabbitMqOptions options, ITracer tracer, ILogger<IMessageBroker> logger)
+        public MessageBroker(IBusPublisher busPublisher, IMessageOutbox outbox,
+            ICorrelationContextAccessor contextAccessor, IHttpContextAccessor httpContextAccessor,
+            IMessagePropertiesAccessor messagePropertiesAccessor, RabbitMqOptions options, ITracer tracer,
+            ILogger<IMessageBroker> logger)
         {
+            _busPublisher = busPublisher;
             _outbox = outbox;
             _contextAccessor = contextAccessor;
             _httpContextAccessor = httpContextAccessor;
@@ -74,7 +77,15 @@ namespace Pacco.Services.Availability.Infrastructure.Services
                 }
 
                 _logger.LogInformation($"Handling integration event: {@event.GetType().Name}");
-                await _outbox.SendAsync(@event, correlationId: correlationId, spanContext: spanContext,
+
+                if (_outbox.Enabled)
+                {
+                    await _outbox.SendAsync(@event, correlationId: correlationId, spanContext: spanContext,
+                        messageContext: correlationContext);
+                    return;
+                }
+
+                await _busPublisher.PublishAsync(@event, correlationId: correlationId, spanContext: spanContext,
                     messageContext: correlationContext);
             }
         }
