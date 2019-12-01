@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.Inbox;
-using Convey.Persistence.MongoDB;
 
 namespace Pacco.Services.Availability.Infrastructure.Mongo.Decorators
 {

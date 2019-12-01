@@ -33,14 +33,14 @@ namespace Pacco.Services.Availability.Infrastructure.Services
                 return;
             }
 
-            _logger.LogInformation("Processing domain events...");
+            _logger.LogTrace("Processing domain events...");
             var integrationEvents = await HandleDomainEvents(events);
             if (!integrationEvents.Any())
             {
                 return;
             }
 
-            _logger.LogInformation("Processing integration events...");
+            _logger.LogTrace("Processing integration events...");
             await _messageBroker.PublishAsync(integrationEvents);
         }
 
@@ -51,8 +51,7 @@ namespace Pacco.Services.Availability.Infrastructure.Services
             foreach (var @event in events)
             {
                 var eventType = @event.GetType();
-                _logger.LogInformation($"Handling domain event: {eventType.Name}");
-
+                _logger.LogTrace($"Handling domain event: {eventType.Name}");
                 var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(eventType);
                 dynamic handlers = scope.ServiceProvider.GetServices(handlerType);
                 foreach (var handler in handlers)

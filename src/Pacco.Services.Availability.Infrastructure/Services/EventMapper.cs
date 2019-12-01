@@ -13,18 +13,16 @@ namespace Pacco.Services.Availability.Infrastructure.Services
     {
         public IEnumerable<IEvent> MapAll(IEnumerable<IDomainEvent> events)
             => events.Select(Map);
-        
+
         public IEvent Map(IDomainEvent @event)
-        {
-            switch (@event)
+            => @event switch
             {
-                case ResourceCreated e: return new ResourceAdded(e.Resource.Id);
-                case ResourceDeleted e: return new Application.Events.ResourceDeleted(e.Resource.Id);
-                case ReservationAdded e: return new ResourceReserved(e.Resource.Id, e.Reservation.DateTime);
-                case ReservationReleased e: return new ResourceReleased(e.Resource.Id, e.Reservation.DateTime);
-                case ReservationCanceled e: return new ResourceReservationCanceled(e.Resource.Id, e.Reservation.DateTime);
-            }
-            return null;
-        }
+                ResourceCreated e => (IEvent) new ResourceAdded(e.Resource.Id),
+                ResourceDeleted e => new Application.Events.ResourceDeleted(e.Resource.Id),
+                ReservationAdded e => new ResourceReserved(e.Resource.Id, e.Reservation.DateTime),
+                ReservationReleased e => new ResourceReleased(e.Resource.Id, e.Reservation.DateTime),
+                ReservationCanceled e => new ResourceReservationCanceled(e.Resource.Id, e.Reservation.DateTime),
+                _ => null
+            };
     }
 }

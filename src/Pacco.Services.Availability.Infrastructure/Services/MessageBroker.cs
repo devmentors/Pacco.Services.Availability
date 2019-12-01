@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Convey.CQRS.Events;
 using Convey.MessageBrokers;
@@ -16,6 +15,7 @@ namespace Pacco.Services.Availability.Infrastructure.Services
 {
     internal sealed class MessageBroker : IMessageBroker
     {
+        private const string DefaultSpanContextHeader = "span_context";
         private readonly IBusPublisher _busPublisher;
         private readonly IMessageOutbox _outbox;
         private readonly ICorrelationContextAccessor _contextAccessor;
@@ -38,12 +38,11 @@ namespace Pacco.Services.Availability.Infrastructure.Services
             _tracer = tracer;
             _logger = logger;
             _spanContextHeader = string.IsNullOrWhiteSpace(options.SpanContextHeader)
-                ? "span_context"
+                ? DefaultSpanContextHeader
                 : options.SpanContextHeader;
         }
 
-        public Task PublishAsync(params IEvent[] events)
-            => PublishAsync(events.AsEnumerable());
+        public Task PublishAsync(params IEvent[] events) => PublishAsync(events?.AsEnumerable());
 
         public async Task PublishAsync(IEnumerable<IEvent> events)
         {
@@ -54,14 +53,7 @@ namespace Pacco.Services.Availability.Infrastructure.Services
 
             var messageProperties = _messagePropertiesAccessor.MessageProperties;
             var correlationId = messageProperties?.CorrelationId;
-            var spanContext = string.Empty;
-
-            if (!(messageProperties is null) && messageProperties.Headers.TryGetValue(_spanContextHeader, out var span)
-                                             && span is byte[] spanBytes)
-            {
-                spanContext = Encoding.UTF8.GetString(spanBytes);
-            }
-
+            var spanContext = messageProperties?.GetSpanContext(_spanContextHeader);
             if (string.IsNullOrWhiteSpace(spanContext))
             {
                 spanContext = _tracer.ActiveSpan is null ? string.Empty : _tracer.ActiveSpan.Context.ToString();
@@ -77,9 +69,8 @@ namespace Pacco.Services.Availability.Infrastructure.Services
                     continue;
                 }
 
-                _logger.LogInformation($"Handling integration event: {@event.GetType().Name}");
-
                 var messageId = Guid.NewGuid().ToString("N");
+                _logger.LogTrace($"Publishing integration event: {@event.GetType().Name} [id: '{messageId}'].");
                 if (_outbox.Enabled)
                 {
                     await _outbox.SendAsync(@event, messageId, correlationId, spanContext, correlationContext);

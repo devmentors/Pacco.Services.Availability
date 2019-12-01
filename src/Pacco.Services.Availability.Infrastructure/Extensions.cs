@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using Convey;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
@@ -8,6 +9,7 @@ using Convey.Discovery.Consul;
 using Convey.Docs.Swagger;
 using Convey.HTTP;
 using Convey.LoadBalancing.Fabio;
+using Convey.MessageBrokers;
 using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.Inbox;
 using Convey.MessageBrokers.Outbox;
@@ -59,7 +61,6 @@ namespace Pacco.Services.Availability.Infrastructure
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
             builder.Services.Decorate(typeof(ICommandHandler<>), typeof(InboxCommandHandlerDecorator<>));
             builder.Services.Decorate(typeof(IEventHandler<>), typeof(InboxEventHandlerDecorator<>));
-
             builder.Services.Scan(s => s.FromAssemblies(AppDomain.CurrentDomain.GetAssemblies())
                 .AddClasses(c => c.AssignableTo(typeof(IDomainEventHandler<>)))
                 .AsImplementedInterfaces()
@@ -107,5 +108,20 @@ namespace Pacco.Services.Availability.Infrastructure
             => accessor.HttpContext?.Request.Headers.TryGetValue("Correlation-Context", out var json) is true
                 ? JsonConvert.DeserializeObject<CorrelationContext>(json.FirstOrDefault())
                 : null;
+
+        internal static string GetSpanContext(this IMessageProperties messageProperties, string header)
+        {
+            if (messageProperties is null)
+            {
+                return string.Empty;
+            }
+
+            if (messageProperties.Headers.TryGetValue(header, out var span) && span is byte[] spanBytes)
+            {
+                return Encoding.UTF8.GetString(spanBytes);
+            }
+
+            return string.Empty;
+        }
     }
 }
