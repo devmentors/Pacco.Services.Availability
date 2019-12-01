@@ -9,6 +9,7 @@ using Convey.Docs.Swagger;
 using Convey.HTTP;
 using Convey.LoadBalancing.Fabio;
 using Convey.MessageBrokers.CQRS;
+using Convey.MessageBrokers.Inbox;
 using Convey.MessageBrokers.Outbox;
 using Convey.MessageBrokers.RabbitMQ;
 using Convey.Metrics.AppMetrics;
@@ -56,9 +57,9 @@ namespace Pacco.Services.Availability.Infrastructure
             builder.Services.AddTransient<IAppContextFactory, AppContextFactory>();
             builder.Services.AddTransient<IEventProcessor, EventProcessor>();
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
-            builder.Services.Decorate(typeof(ICommandHandler<>), typeof(MongoTransactionCommandHandlerDecorator<>));
-            builder.Services.Decorate(typeof(IEventHandler<>), typeof(MongoTransactionEventHandlerDecorator<>));
-            
+            builder.Services.Decorate(typeof(ICommandHandler<>), typeof(InboxCommandHandlerDecorator<>));
+            builder.Services.Decorate(typeof(IEventHandler<>), typeof(InboxEventHandlerDecorator<>));
+
             builder.Services.Scan(s => s.FromAssemblies(AppDomain.CurrentDomain.GetAssemblies())
                 .AddClasses(c => c.AssignableTo(typeof(IDomainEventHandler<>)))
                 .AsImplementedInterfaces()
@@ -71,6 +72,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddConsul()
                 .AddFabio()
                 .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
+                .AddMessageInbox()
                 .AddMessageOutbox()
                 .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
                 .AddMongo()

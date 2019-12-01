@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -51,11 +52,8 @@ namespace Pacco.Services.Availability.Infrastructure.Services
                 return;
             }
 
-            var correlationContext = _contextAccessor.CorrelationContext ??
-                                     _httpContextAccessor.GetCorrelationContext();
-
             var messageProperties = _messagePropertiesAccessor.MessageProperties;
-            var correlationId = _messagePropertiesAccessor.MessageProperties?.CorrelationId;
+            var correlationId = messageProperties?.CorrelationId;
             var spanContext = string.Empty;
 
             if (!(messageProperties is null) && messageProperties.Headers.TryGetValue(_spanContextHeader, out var span)
@@ -69,6 +67,9 @@ namespace Pacco.Services.Availability.Infrastructure.Services
                 spanContext = _tracer.ActiveSpan is null ? string.Empty : _tracer.ActiveSpan.Context.ToString();
             }
 
+            var correlationContext = _contextAccessor.CorrelationContext ??
+                                     _httpContextAccessor.GetCorrelationContext();
+
             foreach (var @event in events)
             {
                 if (@event is null)
@@ -78,15 +79,14 @@ namespace Pacco.Services.Availability.Infrastructure.Services
 
                 _logger.LogInformation($"Handling integration event: {@event.GetType().Name}");
 
+                var messageId = Guid.NewGuid().ToString("N");
                 if (_outbox.Enabled)
                 {
-                    await _outbox.SendAsync(@event, correlationId: correlationId, spanContext: spanContext,
-                        messageContext: correlationContext);
-                    return;
+                    await _outbox.SendAsync(@event, messageId, correlationId, spanContext, correlationContext);
+                    continue;
                 }
 
-                await _busPublisher.PublishAsync(@event, correlationId: correlationId, spanContext: spanContext,
-                    messageContext: correlationContext);
+                await _busPublisher.PublishAsync(@event, messageId, correlationId, spanContext, correlationContext);
             }
         }
     }
