@@ -3,7 +3,7 @@ using Convey.CQRS.Events;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.Inbox;
 
-namespace Pacco.Services.Availability.Infrastructure.Mongo.Decorators
+namespace Pacco.Services.Availability.Infrastructure.Decorators
 {
     internal sealed class InboxEventHandlerDecorator<TEvent> : IEventHandler<TEvent>
         where TEvent : class, IEvent

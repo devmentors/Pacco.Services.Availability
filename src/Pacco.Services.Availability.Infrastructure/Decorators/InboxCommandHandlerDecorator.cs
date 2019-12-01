@@ -3,7 +3,7 @@ using Convey.CQRS.Commands;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.Inbox;
 
-namespace Pacco.Services.Availability.Infrastructure.Mongo.Decorators
+namespace Pacco.Services.Availability.Infrastructure.Decorators
 {
     internal sealed class InboxCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
         where TCommand : class, ICommand
