@@ -8,7 +8,7 @@ using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 
-namespace Pacco.Services.Availability.IntegrationTests.Fixtures
+namespace Pacco.Services.Availability.Tests.Integration.Fixtures
 {
     internal sealed class MongoDbFixtureInitializer
     {

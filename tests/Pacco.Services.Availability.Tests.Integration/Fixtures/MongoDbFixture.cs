@@ -4,7 +4,7 @@ using Convey.Persistence.MongoDB;
 using Convey.Types;
 using MongoDB.Driver;
 
-namespace Pacco.Services.Availability.IntegrationTests.Fixtures
+namespace Pacco.Services.Availability.Tests.Integration.Fixtures
 {
     public class MongoDbFixture<TEntity, TKey> : IDisposable where TEntity : class, IIdentifiable<TKey> 
     {

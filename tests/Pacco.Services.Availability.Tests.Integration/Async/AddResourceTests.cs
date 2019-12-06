@@ -8,11 +8,11 @@ using Pacco.Services.Availability.Api;
 using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Application.Events;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
-using Pacco.Services.Availability.IntegrationTests.Fixtures;
+using Pacco.Services.Availability.Tests.Integration.Fixtures;
 using Shouldly;
 using Xunit;
 
-namespace Pacco.Services.Availability.IntegrationTests.Async
+namespace Pacco.Services.Availability.Tests.Integration.Async
 {
     public class AddResourceTests : IDisposable
     {

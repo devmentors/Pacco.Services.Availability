@@ -9,11 +9,11 @@ using Newtonsoft.Json;
 using Pacco.Services.Availability.Api;
 using Pacco.Services.Availability.Application.DTO;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
-using Pacco.Services.Availability.IntegrationTests.Fixtures;
+using Pacco.Services.Availability.Tests.Integration.Fixtures;
 using Shouldly;
 using Xunit;
 
-namespace Pacco.Services.Availability.IntegrationTests.Sync
+namespace Pacco.Services.Availability.Tests.Integration.Sync
 {
     public class GetResourceTests : IDisposable
     {

@@ -9,7 +9,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Framing;
 
-namespace Pacco.Services.Availability.IntegrationTests.Fixtures
+namespace Pacco.Services.Availability.Tests.Integration.Fixtures
 {
     public class RabbitMqFixture
     {
