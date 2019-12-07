@@ -11,9 +11,6 @@ namespace Pacco.Services.Availability.Application.Exceptions
 
         public UnauthorizedResourceAccessException(Guid resourceId, Guid customerId)
             : base($"Unauthorized access to resource: '{resourceId}' by customer: '{customerId}'")
-        {
-            ResourceId = resourceId;
-            CustomerId = customerId;
-        }
+            => (ResourceId, CustomerId) = (resourceId, customerId);
     }
 }

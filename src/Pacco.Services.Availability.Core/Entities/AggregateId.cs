@@ -7,16 +7,15 @@ namespace Pacco.Services.Availability.Core.Entities
     {
         public Guid Value { get; }
 
-        public AggregateId()
+        public AggregateId() : this(Guid.NewGuid())
         {
-            Value = Guid.NewGuid();
         }
 
         public AggregateId(Guid value)
         {
             if (value == Guid.Empty)
             {
-                throw new InvalidAggregateIdException();
+                throw new InvalidAggregateIdException(value);
             }
 
             Value = value;
@@ -45,7 +44,7 @@ namespace Pacco.Services.Availability.Core.Entities
 
         public static implicit operator AggregateId(Guid id)
             => new AggregateId(id);
-        
+
         public override string ToString() => Value.ToString();
     }
 }

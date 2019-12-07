@@ -10,9 +10,6 @@ namespace Pacco.Services.Availability.Application.Commands
         public DateTime DateTime { get; }
 
         public ReleaseResource(Guid resourceId, DateTime dateTime)
-        {
-            ResourceId = resourceId;
-            DateTime = dateTime;
-        }
+            => (ResourceId, DateTime) = (resourceId, dateTime);
     }
 }

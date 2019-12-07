@@ -9,9 +9,6 @@ namespace Pacco.Services.Availability.Core.Events
         public Reservation Reservation { get; }
 
         public ReservationCanceled(Resource resource, Reservation reservation)
-        {
-            Resource = resource;
-            Reservation = reservation;
-        }
+            => (Resource, Reservation) = (resource, reservation);
     }
 }

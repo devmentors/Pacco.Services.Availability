@@ -11,9 +11,6 @@ namespace Pacco.Services.Availability.Application.Exceptions
 
         public InvalidCustomerStateException(Guid id, string state)
             : base($"Customer with id: {id} has invalid state: {state}.")
-        {
-            Id = id;
-            State = state;
-        }
+            => (Id, State) = (id, state);
     }
 }

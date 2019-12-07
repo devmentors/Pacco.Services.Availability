@@ -10,9 +10,6 @@ namespace Pacco.Services.Availability.Application.Events
         public DateTime DateTime { get; }
 
         public ResourceReserved(Guid resourceId, DateTime dateTime)
-        {
-            ResourceId = resourceId;
-            DateTime = dateTime;
-        }
+            => (ResourceId, DateTime) = (resourceId, dateTime);
     }
 }

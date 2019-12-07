@@ -7,12 +7,9 @@ namespace Pacco.Services.Availability.Core.ValueObjects
         public DateTime DateTime { get; }
         public int Priority { get; }
 
-        public Reservation(DateTime dateTimeTime, int priority)
-        {
-            DateTime = dateTimeTime;
-            Priority = priority;
-        }
-
+        public Reservation(DateTime dateTime, int priority)
+            => (DateTime, Priority) = (dateTime, priority);
+        
         public bool Equals(Reservation reservation)
             => Priority.Equals(reservation.Priority) && DateTime.Date.Equals(reservation.DateTime.Date);
 

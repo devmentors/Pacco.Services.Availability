@@ -12,11 +12,6 @@ namespace Pacco.Services.Availability.Application.Commands
         public int Priority { get; }
 
         public ReserveResource(Guid resourceId, Guid customerId, DateTime dateTime, int priority)
-        {
-            ResourceId = resourceId;
-            CustomerId = customerId;
-            DateTime = dateTime;
-            Priority = priority;
-        }
+            => (ResourceId, CustomerId, DateTime, Priority) = (resourceId, customerId, dateTime, priority);
     }
 }

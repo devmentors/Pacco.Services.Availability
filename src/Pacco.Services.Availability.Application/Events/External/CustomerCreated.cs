@@ -10,8 +10,6 @@ namespace Pacco.Services.Availability.Application.Events.External
         public Guid CustomerId { get; }
 
         public CustomerCreated(Guid customerId)
-        {
-            CustomerId = customerId;
-        }
+            => CustomerId = customerId;
     }
 }

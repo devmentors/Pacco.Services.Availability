@@ -17,6 +17,7 @@ namespace Pacco.Services.Availability.Core.Entities
             {
                 Version++;
             }
+
             _events.Add(@event);
         }
 

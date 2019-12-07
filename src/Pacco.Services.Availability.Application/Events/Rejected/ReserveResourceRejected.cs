@@ -12,11 +12,6 @@ namespace Pacco.Services.Availability.Application.Events.Rejected
         public string Code { get; }
 
         public ReserveResourceRejected(Guid resourceId, DateTime dateTime, string reason, string code)
-        {
-            ResourceId = resourceId;
-            DateTime = dateTime;
-            Reason = reason;
-            Code = code;
-        }
+            => (ResourceId, DateTime, Reason, Code) = (resourceId, dateTime, reason, code);
     }
 }
