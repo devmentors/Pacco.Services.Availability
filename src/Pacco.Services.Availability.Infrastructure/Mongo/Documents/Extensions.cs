@@ -9,7 +9,7 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Documents
     internal static class Extensions
     {
         public static Resource AsEntity(this ResourceDocument document)
-            => new Resource(document.Id, document.Reservations
+            => new Resource(document.Id, document.Tags, document.Reservations
                 .Select(r => new Reservation(r.TimeStamp.AsDateTime(), r.Priority)), document.Version);
         
         public static ResourceDocument AsDocument(this Resource entity)
@@ -17,6 +17,7 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Documents
             {
                 Id = entity.Id,
                 Version = entity.Version,
+                Tags = entity.Tags,
                 Reservations = entity.Reservations.Select(r => new ReservationDocument
                 {
                     TimeStamp = r.DateTime.AsDaysSinceEpoch(),
@@ -28,11 +29,12 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Documents
             => new ResourceDto
             {
                 Id = document.Id,
+                Tags = document.Tags ?? Enumerable.Empty<string>(),
                 Reservations = document.Reservations?.Select(r => new ReservationDto
                 {
                     DateTime = r.TimeStamp.AsDateTime(),
                     Priority = r.Priority
-                })
+                }) ?? Enumerable.Empty<ReservationDto>()
             };
 
         internal static int AsDaysSinceEpoch(this DateTime dateTime)

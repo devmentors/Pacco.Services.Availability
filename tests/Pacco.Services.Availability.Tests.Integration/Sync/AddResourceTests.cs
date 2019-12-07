@@ -23,7 +23,7 @@ namespace Pacco.Services.Availability.Tests.Integration.Sync
         [Fact]
         public async Task AddResource_Endpoint_Should_Return_Created_Http_Status_Code()
         {
-            var command = new AddResource(new Guid(ResourceId));
+            var command = new AddResource(_resourceId, _tags);
 
             var response = await Act(command);
             
@@ -34,20 +34,20 @@ namespace Pacco.Services.Availability.Tests.Integration.Sync
         [Fact]
         public async Task AddResource_Endpoint_Should_Return_Location_Header_With_Correct_ResourceId()
         {
-            var command = new AddResource(new Guid(ResourceId));
+            var command = new AddResource(_resourceId, _tags);
 
             var response = await Act(command);
 
             var locationHeader = response.Headers.FirstOrDefault(h => h.Key == "Location").Value.First();
             
             locationHeader.ShouldNotBeNull();
-            locationHeader.ShouldBe($"resources/{ResourceId}");
+            locationHeader.ShouldBe($"resources/{_resourceId}");
         }
         
         [Fact]
         public async Task AddResource_Endpoint_Should_Add_Resource_With_Given_Id_To_Database()
         {
-            var command = new AddResource(new Guid(ResourceId));
+            var command = new AddResource(_resourceId, _tags);
 
             await Act(command);
 
@@ -55,6 +55,7 @@ namespace Pacco.Services.Availability.Tests.Integration.Sync
             
             document.ShouldNotBeNull();
             document.Id.ShouldBe(command.ResourceId);
+            document.Tags.ShouldBeSameAs(_tags);
         }
         
         #region ARRANGE    
@@ -62,7 +63,8 @@ namespace Pacco.Services.Availability.Tests.Integration.Sync
         private readonly MongoDbFixture<ResourceDocument, Guid> _mongoDbFixture;
         private readonly HttpClient _httpClient;
         
-        private const string ResourceId = "587acaf9-629f-4896-a893-4e94ae628652";
+        private readonly Guid _resourceId;
+        private readonly string[] _tags;
 
         private HttpContent GetHttpContent(AddResource command)
         {
@@ -76,6 +78,8 @@ namespace Pacco.Services.Availability.Tests.Integration.Sync
 
         public AddResourceTests()
         {
+            _resourceId = Guid.Parse("587acaf9-629f-4896-a893-4e94ae628652");
+            _tags = new[]{"tags"};
             _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("resource-test-db", 
                 "Resources");
 

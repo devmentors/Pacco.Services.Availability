@@ -4,7 +4,7 @@ namespace Pacco.Services.Availability.Core.Exceptions
     {
         public override string Code => "invalid_aggregate_id";
         
-        public InvalidAggregateIdException() : base($"Invalid aggregate id.")
+        public InvalidAggregateIdException() : base("Invalid aggregate id.")
         {
         }
     }

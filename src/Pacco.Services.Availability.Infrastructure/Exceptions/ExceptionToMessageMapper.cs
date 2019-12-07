@@ -13,6 +13,10 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
         public object Map(Exception exception, object message)
             => exception switch
             {
+                MissingResourceTagsException ex => (IRejectedEvent) new AddResourceRejected(Guid.Empty, ex.Message,
+                    ex.Code),
+                InvalidResourceTagsException ex => (IRejectedEvent) new AddResourceRejected(Guid.Empty, ex.Message,
+                    ex.Code),
                 ResourceAlreadyExistsException ex => (IRejectedEvent) new AddResourceRejected(ex.Id, ex.Message,
                     ex.Code),
                 CannotExpropriateReservationException ex => message switch

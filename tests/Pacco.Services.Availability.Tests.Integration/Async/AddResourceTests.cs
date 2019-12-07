@@ -16,13 +16,12 @@ namespace Pacco.Services.Availability.Tests.Integration.Async
 {
     public class AddResourceTests : IDisposable
     {
-        Task Act(AddResource command)
-            => _rabbitMqFixture.PublishAsync(command, Exchange);
+        private Task Act(AddResource command) => _rabbitMqFixture.PublishAsync(command, Exchange);
         
         [Fact]
         public async Task AddResource_Endpoint_Should_Add_Resource_With_Given_Id_To_Database()
         {
-            var command = new AddResource(new Guid(ResourceId));
+            var command = new AddResource(_resourceId, _tags);
 
             await Act(command);
             
@@ -33,6 +32,7 @@ namespace Pacco.Services.Availability.Tests.Integration.Async
             
             document.ShouldNotBeNull();
             document.Id.ShouldBe(command.ResourceId);
+            document.Tags.ShouldBeSameAs(_tags);
         }
         
         #region ARRANGE    
@@ -41,7 +41,8 @@ namespace Pacco.Services.Availability.Tests.Integration.Async
         private readonly RabbitMqFixture _rabbitMqFixture;
         private readonly HttpClient _httpClient;
         
-        private const string ResourceId = "587acaf9-629f-4896-a893-4e94ae628652";
+        private readonly Guid _resourceId;
+        private readonly string[] _tags;
         private const string Exchange = "availability";
 
         private HttpContent GetHttpContent(AddResource command)
@@ -56,6 +57,8 @@ namespace Pacco.Services.Availability.Tests.Integration.Async
 
         public AddResourceTests()
         {
+            _resourceId = Guid.Parse("587acaf9-629f-4896-a893-4e94ae628652");
+            _tags = new[]{"tags"};
             _rabbitMqFixture = new RabbitMqFixture("availability");
             _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("resource-test-db", 
                 "Resources");
@@ -68,6 +71,7 @@ namespace Pacco.Services.Availability.Tests.Integration.Async
         {
             _mongoDbFixture.Dispose();
         }
+        
         #endregion
     }
 }

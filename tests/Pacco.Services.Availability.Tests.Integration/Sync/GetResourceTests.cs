@@ -48,12 +48,15 @@ namespace Pacco.Services.Availability.Tests.Integration.Sync
             var response = await Act();
             var dto = await GetDtoAsync(response);
             var reservations = dto.Reservations.ToArray(); 
+            var tags = dto.Tags.ToArray(); 
             
             dto.ShouldNotBeNull();
             dto.Id.ToString().ShouldBe(ResourceId);
             reservations.Length.ShouldBe(1);
             reservations.First().Priority.ShouldBe(Reservation.Priority);
             reservations.First().DateTime.ShouldBe(Reservation.TimeStamp.AsDateTime());
+            tags.Length.ShouldBe(1);
+            tags.First().ShouldBe(Tag);
         }
         
         #region ARRANGE    
@@ -62,6 +65,7 @@ namespace Pacco.Services.Availability.Tests.Integration.Sync
         private readonly HttpClient _httpClient;
         
         private const string ResourceId = "587acaf9-629f-4896-a893-4e94ae628652";
+        private const string Tag = "test";
         private readonly ReservationDocument Reservation = new ReservationDocument
         {
             Priority = 1, TimeStamp = DateTime.UtcNow.AsDaysSinceEpoch()
@@ -72,7 +76,8 @@ namespace Pacco.Services.Availability.Tests.Integration.Sync
             var resourceId = new Guid(ResourceId);
             await _mongoDbFixture.InsertAsync(new ResourceDocument
             {
-                Id = resourceId, 
+                Id = resourceId,
+                Tags = new[]{Tag},
                 Reservations = new List<ReservationDocument>
                 {
                     Reservation

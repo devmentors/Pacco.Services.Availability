@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Convey.CQRS.Queries;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using Pacco.Services.Availability.Application.DTO;
 using Pacco.Services.Availability.Application.Queries;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
@@ -18,14 +19,25 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Queries.Handlers
             _database = database;
         }
 
-
         public async Task<IEnumerable<ResourceDto>> HandleAsync(GetResources query)
         {
-            var documents = await _database.GetCollection<ResourceDocument>("Resources")
-                .Find(_ => true)
-                .ToListAsync();
+            var collection = _database.GetCollection<ResourceDocument>("Resources");
 
-            return documents.Select(d => d.AsDto());
+            if (query.Tags is null || !query.Tags.Any())
+            {
+                var allDocuments = await collection.Find(_ => true).ToListAsync();
+
+                return allDocuments.Select(d => d.AsDto());
+            }
+
+            var documents = collection.AsQueryable();
+            documents = query.MatchAllTags
+                ? documents.Where(d => query.Tags.All(t => d.Tags.Contains(t)))
+                : documents.Where(d => query.Tags.Any(t => d.Tags.Contains(t)));
+
+            var resources = await documents.ToListAsync();
+
+            return resources.Select(d => d.AsDto());
         }
     }
 }

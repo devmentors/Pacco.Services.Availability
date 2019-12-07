@@ -15,13 +15,13 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Repositories
         public ResourcesMongoRepository(IMongoRepository<ResourceDocument, Guid> repository)
             => _repository = repository;
 
-        public async Task<Resource> GetAsync(Guid id)
+        public async Task<Resource> GetAsync(AggregateId id)
         {
             var document = await _repository.GetAsync(r => r.Id == id);
             return document?.AsEntity();
         }
 
-        public Task<bool> ExistsAsync(Guid id)
+        public Task<bool> ExistsAsync(AggregateId id)
             => _repository.ExistsAsync(r => r.Id == id);
 
         public Task AddAsync(Resource resource)
@@ -31,7 +31,7 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Repositories
             => _repository.Collection.ReplaceOneAsync(r => r.Id == resource.Id && r.Version < resource.Version,
                 resource.AsDocument());
 
-        public Task DeleteAsync(Guid id)
+        public Task DeleteAsync(AggregateId id)
             => _repository.DeleteAsync(id);
     }
 }
