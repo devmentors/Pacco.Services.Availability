@@ -98,6 +98,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .SubscribeCommand<DeleteResource>()
                 .SubscribeCommand<ReleaseResource>()
                 .SubscribeCommand<ReserveResource>()
+                .SubscribeEvent<CustomerCreated>()
                 .SubscribeEvent<VehicleDeleted>();
 
             return app;
