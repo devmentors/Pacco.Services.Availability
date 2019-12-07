@@ -15,6 +15,7 @@ namespace Pacco.Services.Availability.Infrastructure.Services
 {
     internal sealed class MessageBroker : IMessageBroker
     {
+        private const string SagaHeader = "saga";
         private const string DefaultSpanContextHeader = "span_context";
         private readonly IBusPublisher _busPublisher;
         private readonly IMessageOutbox _outbox;
@@ -59,6 +60,7 @@ namespace Pacco.Services.Availability.Infrastructure.Services
                 spanContext = _tracer.ActiveSpan is null ? string.Empty : _tracer.ActiveSpan.Context.ToString();
             }
 
+            var headers = messageProperties.GetHeadersToForward();
             var correlationContext = _contextAccessor.CorrelationContext ??
                                      _httpContextAccessor.GetCorrelationContext();
 
@@ -73,11 +75,12 @@ namespace Pacco.Services.Availability.Infrastructure.Services
                 _logger.LogTrace($"Publishing integration event: {@event.GetType().Name} [id: '{messageId}'].");
                 if (_outbox.Enabled)
                 {
-                    await _outbox.SendAsync(@event, messageId, correlationId, spanContext, correlationContext);
+                    await _outbox.SendAsync(@event, messageId, correlationId, spanContext, correlationContext, headers);
                     continue;
                 }
 
-                await _busPublisher.PublishAsync(@event, messageId, correlationId, spanContext, correlationContext);
+                await _busPublisher.PublishAsync(@event, messageId, correlationId, spanContext, correlationContext,
+                    headers);
             }
         }
     }
