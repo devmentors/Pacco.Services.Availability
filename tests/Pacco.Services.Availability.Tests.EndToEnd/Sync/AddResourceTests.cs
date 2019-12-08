@@ -4,16 +4,18 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Convey.Persistence.MongoDB;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using Pacco.Services.Availability.Api;
 using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
-using Pacco.Services.Availability.Tests.Integration.Fixtures;
+using Pacco.Services.Availability.Tests.Shared.Fixtures;
+using Pacco.Services.Availability.Tests.Shared.Helpers;
 using Shouldly;
 using Xunit;
 
-namespace Pacco.Services.Availability.Tests.Integration.Sync
+namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
 {
     public class AddResourceTests : IDisposable
     {
@@ -80,8 +82,9 @@ namespace Pacco.Services.Availability.Tests.Integration.Sync
         {
             _resourceId = Guid.Parse("587acaf9-629f-4896-a893-4e94ae628652");
             _tags = new[]{"tags"};
-            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("resource-test-db", 
-                "Resources");
+
+            var options = OptionsHelper.GetOptions<MongoDbOptions>("mongo");
+            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>(options, "Resources");
 
             var server = new TestServer(Program.GetWebHostBuilder(new string[]{}));
             _httpClient = server.CreateClient();
@@ -91,6 +94,7 @@ namespace Pacco.Services.Availability.Tests.Integration.Sync
         {
             _mongoDbFixture.Dispose();
         }
+        
         #endregion
     }
 }
