@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Pacco\Pacco.Services.Availability.Tests.Shared\Pacco.Services.Availability.Tests.Shared.csproj" />
     <ProjectReference Include="..\..\src\Pacco.Services.Availability.Api\Pacco.Services.Availability.Api.csproj" />
     <ProjectReference Include="..\..\src\Pacco.Services.Availability.Infrastructure\Pacco.Services.Availability.Infrastructure.csproj" />
+    <ProjectReference Include="..\Pacco.Services.Availability.Tests.Shared\Pacco.Services.Availability.Tests.Shared.csproj" />
   </ItemGroup>
   
   <ItemGroup>
