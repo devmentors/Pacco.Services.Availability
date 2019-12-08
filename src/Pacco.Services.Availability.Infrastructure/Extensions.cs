@@ -40,6 +40,7 @@ using Pacco.Services.Availability.Infrastructure.Decorators;
 using Pacco.Services.Availability.Infrastructure.Exceptions;
 using Pacco.Services.Availability.Infrastructure.Jaeger;
 using Pacco.Services.Availability.Infrastructure.Logging;
+using Pacco.Services.Availability.Infrastructure.Metrics;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
 using Pacco.Services.Availability.Infrastructure.Mongo.Repositories;
 using Pacco.Services.Availability.Infrastructure.Services;
@@ -59,6 +60,8 @@ namespace Pacco.Services.Availability.Infrastructure
             builder.Services.AddTransient<IAppContextFactory, AppContextFactory>();
             builder.Services.AddTransient<IEventProcessor, EventProcessor>();
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
+            builder.Services.AddHostedService<MetricsJob>();
+            builder.Services.AddSingleton<CustomMetricsMiddleware>();
             builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(InboxCommandHandlerDecorator<>));
             builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(InboxEventHandlerDecorator<>));
             builder.Services.Scan(s => s.FromAssemblies(AppDomain.CurrentDomain.GetAssemblies())
@@ -94,6 +97,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .UseConvey()
                 .UsePublicContracts<ContractAttribute>()
                 .UseMetrics()
+                .UseMiddleware<CustomMetricsMiddleware>()
                 .UseRabbitMq()
                 .SubscribeCommand<AddResource>()
                 .SubscribeCommand<DeleteResource>()
