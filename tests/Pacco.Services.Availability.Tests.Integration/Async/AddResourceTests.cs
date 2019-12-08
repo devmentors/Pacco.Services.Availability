@@ -8,7 +8,7 @@ using Pacco.Services.Availability.Api;
 using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Application.Events;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
-using Pacco.Services.Availability.Tests.Integration.Fixtures;
+using Pacco.Services.Availability.Tests.Shared.Fixtures;
 using Shouldly;
 using Xunit;
 
@@ -60,8 +60,7 @@ namespace Pacco.Services.Availability.Tests.Integration.Async
             _resourceId = Guid.Parse("587acaf9-629f-4896-a893-4e94ae628652");
             _tags = new[]{"tags"};
             _rabbitMqFixture = new RabbitMqFixture("availability");
-            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("resource-test-db", 
-                "Resources");
+            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("Resources");
 
             var server = new TestServer(Program.GetWebHostBuilder(new string[]{}));
             _httpClient = server.CreateClient();

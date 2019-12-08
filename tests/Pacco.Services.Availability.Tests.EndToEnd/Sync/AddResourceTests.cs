@@ -83,8 +83,7 @@ namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
             _resourceId = Guid.Parse("587acaf9-629f-4896-a893-4e94ae628652");
             _tags = new[]{"tags"};
 
-            var options = OptionsHelper.GetOptions<MongoDbOptions>("mongo");
-            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>(options, "Resources");
+            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("Resources");
 
             var server = new TestServer(Program.GetWebHostBuilder(new string[]{}));
             _httpClient = server.CreateClient();

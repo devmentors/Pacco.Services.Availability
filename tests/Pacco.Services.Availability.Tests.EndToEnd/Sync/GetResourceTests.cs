@@ -95,8 +95,7 @@ namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
         
         public GetResourceTests()
         {
-            var options = OptionsHelper.GetOptions<MongoDbOptions>("mongo");
-            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>(options, "Resources");
+            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("Resources");
 
             var server = new TestServer(Program.GetWebHostBuilder(new string[]{}));
             _httpClient = server.CreateClient();
