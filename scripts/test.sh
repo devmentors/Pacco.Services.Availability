@@ -1,2 +1,2 @@
 #!/bin/bash
-dotnet test
+dotnet test --filter FullyQualifiedName!~Integration
