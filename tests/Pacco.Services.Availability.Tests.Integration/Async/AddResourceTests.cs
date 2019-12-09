@@ -8,13 +8,14 @@ using Pacco.Services.Availability.Api;
 using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Application.Events;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
+using Pacco.Services.Availability.Tests.Shared.Factories;
 using Pacco.Services.Availability.Tests.Shared.Fixtures;
 using Shouldly;
 using Xunit;
 
 namespace Pacco.Services.Availability.Tests.Integration.Async
 {
-    public class AddResourceTests : IDisposable
+    public class AddResourceTests : IDisposable, IClassFixture<PaccoApplicationFactory<Program>>
     {
         private Task Act(AddResource command) => _rabbitMqFixture.PublishAsync(command, Exchange);
         
@@ -55,15 +56,15 @@ namespace Pacco.Services.Availability.Tests.Integration.Async
             return byteContent;
         }
 
-        public AddResourceTests()
+        public AddResourceTests(PaccoApplicationFactory<Program> factory)
         {
             _resourceId = Guid.Parse("587acaf9-629f-4896-a893-4e94ae628652");
             _tags = new[]{"tags"};
             _rabbitMqFixture = new RabbitMqFixture("availability");
             _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("Resources");
 
-            var server = new TestServer(Program.CreateWebHostBuilder(new string[]{}));
-            _httpClient = server.CreateClient();
+            factory.Server.AllowSynchronousIO = true;
+            _httpClient = factory.CreateClient();
         }
         
         public void Dispose()
