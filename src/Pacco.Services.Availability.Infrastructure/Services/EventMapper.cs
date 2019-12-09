@@ -20,7 +20,7 @@ namespace Pacco.Services.Availability.Infrastructure.Services
                 ResourceCreated e => (IEvent) new ResourceAdded(e.Resource.Id),
                 ResourceDeleted e => new Application.Events.ResourceDeleted(e.Resource.Id),
                 ReservationAdded e => new ResourceReserved(e.Resource.Id, e.Reservation.DateTime),
-                ReservationReleased e => new ResourceReleased(e.Resource.Id, e.Reservation.DateTime),
+                ReservationReleased e => new ResourceReservationReleased(e.Resource.Id, e.Reservation.DateTime),
                 ReservationCanceled e => new ResourceReservationCanceled(e.Resource.Id, e.Reservation.DateTime),
                 _ => null
             };
