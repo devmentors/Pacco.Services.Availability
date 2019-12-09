@@ -54,6 +54,7 @@ namespace Pacco.Services.Availability.Infrastructure.Services
 
             var messageProperties = _messagePropertiesAccessor.MessageProperties;
             var correlationId = messageProperties?.CorrelationId;
+            var userId = messageProperties?.UserId;
             var spanContext = messageProperties?.GetSpanContext(_spanContextHeader);
             if (string.IsNullOrWhiteSpace(spanContext))
             {
@@ -75,12 +76,13 @@ namespace Pacco.Services.Availability.Infrastructure.Services
                 _logger.LogTrace($"Publishing integration event: {@event.GetType().Name} [id: '{messageId}'].");
                 if (_outbox.Enabled)
                 {
-                    await _outbox.SendAsync(@event, messageId, correlationId, spanContext, correlationContext, headers);
+                    await _outbox.SendAsync(@event, messageId, correlationId, spanContext, correlationContext, headers,
+                        userId);
                     continue;
                 }
 
                 await _busPublisher.PublishAsync(@event, messageId, correlationId, spanContext, correlationContext,
-                    headers);
+                    headers, userId);
             }
         }
     }
