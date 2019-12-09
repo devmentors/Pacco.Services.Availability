@@ -65,16 +65,16 @@ namespace Pacco.Services.Availability.Core.Entities
                     throw new CannotExpropriateReservationException(Id, reservation.DateTime.Date);
                 }
 
-                _reservations.Remove(collidingReservation);
-                AddEvent(new ReservationCanceled(this, collidingReservation));
+                if (_reservations.Remove(collidingReservation))
+                {
+                    AddEvent(new ReservationCanceled(this, collidingReservation));
+                }
             }
 
-            if (!_reservations.Add(reservation))
+            if (_reservations.Add(reservation))
             {
-                return;
+                AddEvent(new ReservationAdded(this, reservation));
             }
-
-            AddEvent(new ReservationAdded(this, reservation));
 
             bool HasTheSameReservationDate(Reservation r) => r.DateTime.Date == reservation.DateTime.Date;
         }
