@@ -4,20 +4,19 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Convey.Persistence.MongoDB;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using Pacco.Services.Availability.Api;
 using Pacco.Services.Availability.Application.DTO;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
+using Pacco.Services.Availability.Tests.Shared.Factories;
 using Pacco.Services.Availability.Tests.Shared.Fixtures;
-using Pacco.Services.Availability.Tests.Shared.Helpers;
 using Shouldly;
 using Xunit;
 
 namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
 {
-    public class GetResourceTests : IDisposable
+    public class GetResourceTests : IDisposable, IClassFixture<PaccoApplicationFactory<Program>>
     {
         Task<HttpResponseMessage> Act()
             => _httpClient.GetAsync($"resources/{ResourceId}");
@@ -93,12 +92,12 @@ namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
             return JsonConvert.DeserializeObject<ResourceDto>(json);
         }
         
-        public GetResourceTests()
+        public GetResourceTests(PaccoApplicationFactory<Program> factory)
         {
             _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("Resources");
-
-            var server = new TestServer(Program.GetWebHostBuilder(new string[]{}));
-            _httpClient = server.CreateClient();
+            
+            factory.Server.AllowSynchronousIO = true;
+            _httpClient = factory.CreateClient();
         }
         
         public void Dispose()

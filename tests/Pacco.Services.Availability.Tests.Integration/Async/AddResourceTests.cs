@@ -62,7 +62,7 @@ namespace Pacco.Services.Availability.Tests.Integration.Async
             _rabbitMqFixture = new RabbitMqFixture("availability");
             _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("Resources");
 
-            var server = new TestServer(Program.GetWebHostBuilder(new string[]{}));
+            var server = new TestServer(Program.CreateWebHostBuilder(new string[]{}));
             _httpClient = server.CreateClient();
         }
         

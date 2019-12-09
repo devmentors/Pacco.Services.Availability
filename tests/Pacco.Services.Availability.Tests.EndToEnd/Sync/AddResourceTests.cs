@@ -5,11 +5,13 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Convey.Persistence.MongoDB;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using Pacco.Services.Availability.Api;
 using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
+using Pacco.Services.Availability.Tests.Shared.Factories;
 using Pacco.Services.Availability.Tests.Shared.Fixtures;
 using Pacco.Services.Availability.Tests.Shared.Helpers;
 using Shouldly;
@@ -17,7 +19,7 @@ using Xunit;
 
 namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
 {
-    public class AddResourceTests : IDisposable
+    public class AddResourceTests : IDisposable, IClassFixture<PaccoApplicationFactory<Program>>
     {
         Task<HttpResponseMessage> Act(AddResource command)
             => _httpClient.PostAsync("resources", GetHttpContent(command));
@@ -57,7 +59,7 @@ namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
             
             document.ShouldNotBeNull();
             document.Id.ShouldBe(command.ResourceId);
-            document.Tags.ShouldBeSameAs(_tags);
+            document.Tags.ShouldBe(_tags);
         }
         
         #region ARRANGE    
@@ -78,15 +80,15 @@ namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
             return byteContent;
         }
 
-        public AddResourceTests()
+        public AddResourceTests(PaccoApplicationFactory<Program> factory)
         {
             _resourceId = Guid.Parse("587acaf9-629f-4896-a893-4e94ae628652");
             _tags = new[]{"tags"};
 
             _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("Resources");
-
-            var server = new TestServer(Program.GetWebHostBuilder(new string[]{}));
-            _httpClient = server.CreateClient();
+            
+            factory.Server.AllowSynchronousIO = true;
+            _httpClient = factory.CreateClient();
         }
         
         public void Dispose()

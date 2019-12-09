@@ -6,7 +6,7 @@ namespace Pacco.Services.Availability.Tests.Shared.Helpers
     {
         public static TSettings GetOptions<TSettings>(string section, string settingsFileName = null) where TSettings : class, new()
         {
-            settingsFileName ??= "appsettings.json";
+            settingsFileName ??= "appsettings.tests.json";
             var configuration = new TSettings();
             
             GetConfigurationRoot(settingsFileName)

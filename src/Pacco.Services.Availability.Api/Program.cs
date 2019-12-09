@@ -9,6 +9,7 @@ using Convey.WebApi.CQRS;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Pacco.Services.Availability.Application;
 using Pacco.Services.Availability.Application.Commands;
@@ -21,11 +22,11 @@ namespace Pacco.Services.Availability.Api
     public class Program
     {
         public static async Task Main(string[] args)
-            => await GetWebHostBuilder(args)
+            => await CreateWebHostBuilder(args)
                 .Build()
                 .RunAsync();
 
-        public static IWebHostBuilder GetWebHostBuilder(string[] args)
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
             => WebHost.CreateDefaultBuilder(args)
                 .ConfigureServices(services => services
                     .AddConvey()
