@@ -33,7 +33,7 @@ namespace Pacco.Services.Availability.Tests.Integration.Async
             
             document.ShouldNotBeNull();
             document.Id.ShouldBe(command.ResourceId);
-            document.Tags.ShouldBeSameAs(_tags);
+            document.Tags.ShouldBe(_tags);
         }
         
         #region ARRANGE    
