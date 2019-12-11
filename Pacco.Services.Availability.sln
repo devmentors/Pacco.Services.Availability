@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pacco.Services.Availability
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pacco.Services.Availability.Tests.Unit", "tests\Pacco.Services.Availability.Tests.Unit\Pacco.Services.Availability.Tests.Unit.csproj", "{2DDFFF6F-06AB-494F-A19B-305A5950CE59}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pacco.Services.Availability.Tests.Shared", "tests\Pacco.Services.Availability.Tests.Shared\Pacco.Services.Availability.Tests.Shared.csproj", "{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -132,6 +134,18 @@ Global
 		{2DDFFF6F-06AB-494F-A19B-305A5950CE59}.Release|x64.Build.0 = Release|Any CPU
 		{2DDFFF6F-06AB-494F-A19B-305A5950CE59}.Release|x86.ActiveCfg = Release|Any CPU
 		{2DDFFF6F-06AB-494F-A19B-305A5950CE59}.Release|x86.Build.0 = Release|Any CPU
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}.Debug|x64.Build.0 = Debug|Any CPU
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}.Debug|x86.Build.0 = Debug|Any CPU
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}.Release|x64.ActiveCfg = Release|Any CPU
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}.Release|x64.Build.0 = Release|Any CPU
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}.Release|x86.ActiveCfg = Release|Any CPU
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{72D1E9E7-EC65-4BF4-947B-3AA8D4FE6FE6} = {8B5081DF-A569-42A4-B3A0-2B98599DD75D}
@@ -142,5 +156,6 @@ Global
 		{A0B58CAB-DFF7-4D05-949A-33895EE2D09F} = {FE9D0417-519F-42CA-A553-3907C74D92AB}
 		{9E3D8356-199F-42A4-90C2-FBE94C26C5F3} = {FE9D0417-519F-42CA-A553-3907C74D92AB}
 		{2DDFFF6F-06AB-494F-A19B-305A5950CE59} = {FE9D0417-519F-42CA-A553-3907C74D92AB}
+		{CB2D2CC4-33A7-4E2B-A418-9A5E733790B4} = {FE9D0417-519F-42CA-A553-3907C74D92AB}
 	EndGlobalSection
 EndGlobal

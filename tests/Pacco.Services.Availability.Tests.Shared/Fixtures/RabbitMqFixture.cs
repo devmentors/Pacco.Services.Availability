@@ -47,12 +47,11 @@ namespace Pacco.Services.Availability.Tests.Shared.Fixtures
             var routingKey = SnakeCase(message.GetType().Name);
             var json = JsonConvert.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(json);
-            _channel.BasicPublish(exchange, routingKey, body: body, basicProperties: new BasicProperties
-            {
-                Headers = new Dictionary<string, object>(),
-                MessageId = Guid.NewGuid().ToString(),
-                CorrelationId = Guid.NewGuid().ToString()
-            });
+            var properties = _channel.CreateBasicProperties();
+            properties.Headers = new Dictionary<string, object>();
+            properties.MessageId = Guid.NewGuid().ToString();
+            properties.CorrelationId = Guid.NewGuid().ToString();
+            _channel.BasicPublish(exchange, routingKey, properties, body);
             return Task.CompletedTask;
         }
         
