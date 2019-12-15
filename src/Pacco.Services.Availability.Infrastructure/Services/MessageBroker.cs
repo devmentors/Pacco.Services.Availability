@@ -15,7 +15,6 @@ namespace Pacco.Services.Availability.Infrastructure.Services
 {
     internal sealed class MessageBroker : IMessageBroker
     {
-        private const string SagaHeader = "saga";
         private const string DefaultSpanContextHeader = "span_context";
         private readonly IBusPublisher _busPublisher;
         private readonly IMessageOutbox _outbox;
