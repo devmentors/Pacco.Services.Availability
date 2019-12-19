@@ -101,7 +101,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .UseRabbitMq()
                 .SubscribeCommand<AddResource>()
                 .SubscribeCommand<DeleteResource>()
-                .SubscribeCommand<ReleaseResource>()
+                .SubscribeCommand<ReleaseResourceReservation>()
                 .SubscribeCommand<ReserveResource>()
                 .SubscribeEvent<CustomerCreated>()
                 .SubscribeEvent<VehicleDeleted>();

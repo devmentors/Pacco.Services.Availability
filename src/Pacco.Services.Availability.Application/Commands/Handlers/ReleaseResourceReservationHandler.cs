@@ -7,18 +7,18 @@ using Pacco.Services.Availability.Core.Repositories;
 
 namespace Pacco.Services.Availability.Application.Commands.Handlers
 {
-    internal sealed class ReleaseResourceHandler : ICommandHandler<ReleaseResource>
+    internal sealed class ReleaseResourceReservationHandler : ICommandHandler<ReleaseResourceReservation>
     {
         private readonly IResourcesRepository _repository;
         private readonly IEventProcessor _eventProcessor;
 
-        public ReleaseResourceHandler(IResourcesRepository repository, IEventProcessor eventProcessor)
+        public ReleaseResourceReservationHandler(IResourcesRepository repository, IEventProcessor eventProcessor)
         {
             _repository = repository;
             _eventProcessor = eventProcessor;
         }
         
-        public async Task HandleAsync(ReleaseResource command)
+        public async Task HandleAsync(ReleaseResourceReservation command)
         {
             var resource = await _repository.GetAsync(command.ResourceId);
             

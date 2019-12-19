@@ -24,7 +24,7 @@ namespace Pacco.Services.Availability.Infrastructure.Logging
                     }
                 },
                 {typeof(DeleteResource),  new HandlerLogTemplate { After = "Deleted a resource with id: {ResourceId}."}},
-                {typeof(ReleaseResource), new HandlerLogTemplate { After = "Released a resource with id: {ResourceId}."}},
+                {typeof(ReleaseResourceReservation), new HandlerLogTemplate { After = "Released a resource with id: {ResourceId}."}},
                 {typeof(ReserveResource), new HandlerLogTemplate { After = "Reserved a resource with id: {ResourceId} " +
                                                                           "priority: {Priority}, date: {DateTime}."}},
                 {typeof(VehicleDeleted), new HandlerLogTemplate{ Before = "Vehicle with id: {VehicleId} has been deleted."}}, 

@@ -21,19 +21,19 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
                     ex.Code),
                 CannotExpropriateReservationException ex => message switch
                 {
-                    ReserveResource command => new ReserveResourceRejected(command.ResourceId, command.DateTime,
+                    ReserveResource command => new ReleaseResourceReservationRejected(command.ResourceId, command.DateTime,
                         ex.Message, ex.Code),
                     _ => null
                 },
                 CustomerNotFoundException ex => message switch
                 {
-                    ReserveResource command => new ReserveResourceRejected(command.ResourceId, command.DateTime,
+                    ReserveResource command => new ReleaseResourceReservationRejected(command.ResourceId, command.DateTime,
                         ex.Message, ex.Code),
                     _ => null
                 },
                 InvalidCustomerStateException ex => message switch
                 {
-                    ReserveResource command => new ReserveResourceRejected(command.ResourceId, command.DateTime,
+                    ReserveResource command => new ReleaseResourceReservationRejected(command.ResourceId, command.DateTime,
                         ex.Message, ex.Code),
                     _ => null
                 },
@@ -41,15 +41,15 @@ namespace Pacco.Services.Availability.Infrastructure.Exceptions
                 {
                     DeleteResource command => (IRejectedEvent) new DeleteResourceRejected(command.ResourceId,
                         ex.Message, ex.Code),
-                    ReserveResource command => new ReserveResourceRejected(command.ResourceId, command.DateTime,
+                    ReserveResource command => new ReleaseResourceReservationRejected(command.ResourceId, command.DateTime,
                         ex.Message, ex.Code),
-                    ReleaseResource command => new ReleaseResourceRejected(command.ResourceId, command.DateTime,
+                    ReleaseResourceReservation command => new ReleaseResourceRejected(command.ResourceId, command.DateTime,
                         ex.Message, ex.Code),
                     _ => null
                 },
                 UnauthorizedResourceAccessException ex => message switch
                 {
-                    ReserveResource command => new ReserveResourceRejected(command.ResourceId, command.DateTime,
+                    ReserveResource command => new ReleaseResourceReservationRejected(command.ResourceId, command.DateTime,
                         ex.Message, ex.Code),
                     _ => null
                 },
