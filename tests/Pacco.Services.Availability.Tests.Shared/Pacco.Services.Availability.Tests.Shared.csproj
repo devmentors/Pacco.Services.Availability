@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Convey.MessageBrokers.RabbitMQ" Version="0.3.146" />
       <PackageReference Include="Convey.Persistence.MongoDB" Version="0.3.146" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.0" />
     </ItemGroup>
 
 </Project>
