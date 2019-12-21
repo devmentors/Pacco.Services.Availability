@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using Pacco.Services.Availability.Tests.Shared.Helpers;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using RabbitMQ.Client.Framing;
 
 namespace Pacco.Services.Availability.Tests.Shared.Fixtures
 {

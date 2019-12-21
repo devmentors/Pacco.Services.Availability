@@ -9,7 +9,6 @@ using Convey.WebApi.CQRS;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Pacco.Services.Availability.Application;
 using Pacco.Services.Availability.Application.Commands;

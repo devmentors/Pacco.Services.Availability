@@ -4,16 +4,12 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Convey.Persistence.MongoDB;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using Pacco.Services.Availability.Api;
 using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
 using Pacco.Services.Availability.Tests.Shared.Factories;
 using Pacco.Services.Availability.Tests.Shared.Fixtures;
-using Pacco.Services.Availability.Tests.Shared.Helpers;
 using Shouldly;
 using Xunit;
 
