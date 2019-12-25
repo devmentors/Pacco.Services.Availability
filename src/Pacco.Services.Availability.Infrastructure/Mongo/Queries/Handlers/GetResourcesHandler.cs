@@ -21,7 +21,7 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Queries.Handlers
 
         public async Task<IEnumerable<ResourceDto>> HandleAsync(GetResources query)
         {
-            var collection = _database.GetCollection<ResourceDocument>("Resources");
+            var collection = _database.GetCollection<ResourceDocument>("resources");
 
             if (query.Tags is null || !query.Tags.Any())
             {

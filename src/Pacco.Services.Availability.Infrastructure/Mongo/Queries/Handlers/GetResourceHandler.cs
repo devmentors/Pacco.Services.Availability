@@ -18,7 +18,7 @@ namespace Pacco.Services.Availability.Infrastructure.Mongo.Queries.Handlers
 
         public async Task<ResourceDto> HandleAsync(GetResource query)
         {
-            var document = await _database.GetCollection<ResourceDocument>("Resources")
+            var document = await _database.GetCollection<ResourceDocument>("resources")
                 .Find(r => r.Id == query.ResourceId)
                 .SingleOrDefaultAsync();
             
