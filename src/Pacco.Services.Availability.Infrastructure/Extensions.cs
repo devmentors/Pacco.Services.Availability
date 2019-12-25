@@ -13,6 +13,7 @@ using Convey.LoadBalancing.Fabio;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.Outbox;
+using Convey.MessageBrokers.Outbox.Mongo;
 using Convey.MessageBrokers.RabbitMQ;
 using Convey.Metrics.AppMetrics;
 using Convey.Persistence.MongoDB;
@@ -75,7 +76,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddConsul()
                 .AddFabio()
                 .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
-                .AddMessageOutbox()
+                .AddMessageOutbox(o => o.AddMongo())
                 .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
                 .AddMongo()
                 .AddRedis()
