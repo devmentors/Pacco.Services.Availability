@@ -84,7 +84,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddJaeger()
                 .AddJaegerDecorators()
                 .AddHandlersLogging()
-                .AddMongoRepository<ResourceDocument, Guid>("Resources")
+                .AddMongoRepository<ResourceDocument, Guid>("resources")
                 .AddWebApiSwaggerDocs();
         }
 
