@@ -45,7 +45,7 @@ namespace Pacco.Services.Availability.Infrastructure.Jaeger
                 .BuildSpan($"handling-{commandName}")
                 .WithTag("message-type", commandName);
 
-            if (!(_tracer.ActiveSpan is null))
+            if (_tracer.ActiveSpan is {})
             {
                 scope.AddReference(References.ChildOf, _tracer.ActiveSpan.Context);
             }

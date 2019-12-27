@@ -18,7 +18,7 @@ namespace Pacco.Services.Availability.Infrastructure.Contexts
 
         public IAppContext Create()
         {
-            if (!(_contextAccessor.CorrelationContext is null))
+            if (_contextAccessor.CorrelationContext is {})
             {
                 var payload = JsonConvert.SerializeObject(_contextAccessor.CorrelationContext);
 
