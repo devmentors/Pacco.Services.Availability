@@ -31,9 +31,9 @@ namespace Pacco.Services.Availability.Infrastructure.Jaeger
                 await _handler.HandleAsync(command);
                 span.Log($"Handled a message: {commandName}");
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                span.Log(e.Message);
+                span.Log(ex.Message);
                 span.SetTag(Tags.Error, true);
                 throw;
             }

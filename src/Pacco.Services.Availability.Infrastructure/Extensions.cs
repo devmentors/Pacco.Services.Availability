@@ -70,6 +70,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .WithTransientLifetime());
 
             return builder
+                .AddErrorHandler<ExceptionToResponseMapper>()
                 .AddQueryHandlers()
                 .AddInMemoryQueryDispatcher()
                 .AddHttpClient()

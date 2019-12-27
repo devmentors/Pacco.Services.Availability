@@ -1,9 +1,8 @@
 using System;
-using Pacco.Services.Availability.Core.Exceptions;
 
 namespace Pacco.Services.Availability.Application.Exceptions
 {
-    public class ResourceNotFoundException : ApplicationException
+    public class ResourceNotFoundException : AppException
     {
         public override string Code => "resource_not_found";
         public Guid Id { get; }
