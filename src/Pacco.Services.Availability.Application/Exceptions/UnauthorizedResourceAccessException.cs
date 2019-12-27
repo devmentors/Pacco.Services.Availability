@@ -3,7 +3,7 @@ using Pacco.Services.Availability.Core.Exceptions;
 
 namespace Pacco.Services.Availability.Application.Exceptions
 {
-    public class UnauthorizedResourceAccessException : ExceptionBase
+    public class UnauthorizedResourceAccessException : ApplicationException
     {
         public override string Code => "unauthorized_resource_access";
         public Guid ResourceId { get; }

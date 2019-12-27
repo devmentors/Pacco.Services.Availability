@@ -3,7 +3,7 @@ using Pacco.Services.Availability.Core.Exceptions;
 
 namespace Pacco.Services.Availability.Application.Exceptions
 {
-    public class CustomerNotFoundException : ExceptionBase
+    public class CustomerNotFoundException : ApplicationException
     {
         public override string Code => "customer_not_found";
         public Guid Id { get; }

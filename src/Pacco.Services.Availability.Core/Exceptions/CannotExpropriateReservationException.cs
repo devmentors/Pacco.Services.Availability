@@ -2,7 +2,7 @@ using System;
 
 namespace Pacco.Services.Availability.Core.Exceptions
 {
-    public class CannotExpropriateReservationException : ExceptionBase
+    public class CannotExpropriateReservationException : DomainException
     {
         public override string Code => "cannot_expropriate_reservation";
         public Guid ResourceId { get; }

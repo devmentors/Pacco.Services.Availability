@@ -3,7 +3,7 @@ using Pacco.Services.Availability.Core.Exceptions;
 
 namespace Pacco.Services.Availability.Application.Exceptions
 {
-    public class ResourceNotFoundException : ExceptionBase
+    public class ResourceNotFoundException : ApplicationException
     {
         public override string Code => "resource_not_found";
         public Guid Id { get; }

@@ -1,6 +1,6 @@
 namespace Pacco.Services.Availability.Core.Exceptions
 {
-    public class MissingResourceTagsException : ExceptionBase
+    public class MissingResourceTagsException : DomainException
     {
         public override string Code => "missing_resource_tags";
         

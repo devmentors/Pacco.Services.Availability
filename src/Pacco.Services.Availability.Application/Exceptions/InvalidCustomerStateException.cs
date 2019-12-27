@@ -3,7 +3,7 @@ using Pacco.Services.Availability.Core.Exceptions;
 
 namespace Pacco.Services.Availability.Application.Exceptions
 {
-    public class InvalidCustomerStateException : ExceptionBase
+    public class InvalidCustomerStateException : ApplicationException
     {
         public override string Code => "invalid_customer_state";
         public Guid Id { get; }

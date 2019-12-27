@@ -3,7 +3,7 @@ using Pacco.Services.Availability.Core.Exceptions;
 
 namespace Pacco.Services.Availability.Application.Exceptions
 {
-    public class ResourceAlreadyExistsException : ExceptionBase
+    public class ResourceAlreadyExistsException : ApplicationException
     {
         public override string Code => "resource_already_exists";
         public Guid Id { get; }

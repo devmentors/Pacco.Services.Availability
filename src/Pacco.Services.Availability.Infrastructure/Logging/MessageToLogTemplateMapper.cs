@@ -19,7 +19,7 @@ namespace Pacco.Services.Availability.Infrastructure.Logging
                         After = "Added a resource with id: {ResourceId}. ",
                         OnError = new Dictionary<Type, string>
                         {
-                            { typeof(ResourceAlreadyExistsException), "Resource with id: {ResourceId} already exists!"}
+                            { typeof(ResourceAlreadyExistsException), "Resource with id: {ResourceId} already exists."}
                         }
                     }
                 },
