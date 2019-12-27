@@ -25,13 +25,13 @@ namespace Pacco.Services.Availability.Core.Entities
         }
 
         public Resource(Guid id, IEnumerable<string> tags, IEnumerable<Reservation> reservations = null,
-            int? version = null)
+            int version = 0)
         {
             ValidateTags(tags);
             Id = id;
             Tags = tags;
             Reservations = reservations ?? Enumerable.Empty<Reservation>();
-            Version = version ?? 0;
+            Version = version;
         }
 
         private static void ValidateTags(IEnumerable<string> tags)
