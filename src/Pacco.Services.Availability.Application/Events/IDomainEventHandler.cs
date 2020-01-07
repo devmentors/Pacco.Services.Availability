@@ -3,8 +3,8 @@ using Pacco.Services.Availability.Core.Events;
 
 namespace Pacco.Services.Availability.Application.Events
 {
-    public interface IDomainEventHandler<in T> where T : class, IDomainEvent
+    public interface IDomainEventHandler<in TEvent> where TEvent : class, IDomainEvent
     {
-        Task HandleAsync(T @event);
+        Task HandleAsync(TEvent @event);
     }
 }

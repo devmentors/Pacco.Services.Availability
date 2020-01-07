@@ -1,7 +1,7 @@
 using Convey;
 using Convey.Logging.CQRS;
 using Microsoft.Extensions.DependencyInjection;
-using Pacco.Services.Availability.Application.Commands;
+using Pacco.Services.Availability.Application;
 
 namespace Pacco.Services.Availability.Infrastructure.Logging
 {
@@ -9,7 +9,7 @@ namespace Pacco.Services.Availability.Infrastructure.Logging
     {
         public static IConveyBuilder AddHandlersLogging(this IConveyBuilder builder)
         {
-            var assembly = typeof(AddResource).Assembly;
+            var assembly = typeof(IAppContext).Assembly;
             
             builder.Services.AddSingleton<IMessageToLogTemplateMapper>(new MessageToLogTemplateMapper());
             
