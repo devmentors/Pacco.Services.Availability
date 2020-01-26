@@ -5,8 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Convey.MessageBrokers.RabbitMQ" Version="0.3.146" />
-      <PackageReference Include="Convey.Persistence.MongoDB" Version="0.3.146" />
+      <PackageReference Include="Convey.MessageBrokers.RabbitMQ" Version="0.4.*" />
+      <PackageReference Include="Convey.Persistence.MongoDB" Version="0.4.*" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.0" />
     </ItemGroup>
 
