@@ -13,7 +13,7 @@ namespace Pacco.Services.Availability.Tests.Performance
         {
             const string url = "http://localhost:5001";
             const string stepName = "init";
-            const int duration = 2;
+            const int duration = 3;
             const int expectedRps = 100;
             var endpoint = $"{url}/resources";
 
@@ -32,7 +32,7 @@ namespace Pacco.Services.Availability.Tests.Performance
                 .WithOutWarmUp()
                 .WithDuration(TimeSpan.FromSeconds(duration))
                 .WithAssertions(assertions);
-
+            
             NBomberRunner.RegisterScenarios(scenario)
                 .RunTest();
         }

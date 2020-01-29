@@ -14,46 +14,43 @@ namespace Pacco.Services.Availability.Tests.Integration.Async
     public class AddResourceTests : IDisposable, IClassFixture<PaccoApplicationFactory<Program>>
     {
         private Task Act(AddResource command) => _rabbitMqFixture.PublishAsync(command, Exchange);
-        
+
         [Fact]
-        public async Task AddResource_Endpoint_Should_Add_Resource_With_Given_Id_To_Database()
+        public async Task add_resource_command_should_add_document_with_given_id_to_database()
         {
-            var command = new AddResource(_resourceId, _tags);
+            var command = new AddResource(Guid.NewGuid(), new[] {"tag"});
+
+            var tcs = _rabbitMqFixture
+                .SubscribeAndGet<ResourceAdded, ResourceDocument>(Exchange,
+                    _mongoDbFixture.GetAsync, command.ResourceId);
 
             await Act(command);
-            
-            var tcs = _rabbitMqFixture.SubscribeAndGet<ResourceAdded, ResourceDocument>(Exchange,
-                _mongoDbFixture.GetAsync, command.ResourceId);
-            
+
             var document = await tcs.Task;
             
             document.ShouldNotBeNull();
             document.Id.ShouldBe(command.ResourceId);
-            document.Tags.ShouldBe(_tags);
+            document.Tags.ShouldBe(command.Tags);
         }
         
-        #region ARRANGE    
-        
+        #region Arrange
+
+        private const string Exchange = "availability";
         private readonly MongoDbFixture<ResourceDocument, Guid> _mongoDbFixture;
         private readonly RabbitMqFixture _rabbitMqFixture;
-        private readonly Guid _resourceId;
-        private readonly string[] _tags;
-        private const string Exchange = "availability";
-
+        
         public AddResourceTests(PaccoApplicationFactory<Program> factory)
         {
-            _resourceId = Guid.Parse("587acaf9-629f-4896-a893-4e94ae628652");
-            _tags = new[]{"tags"};
-            _rabbitMqFixture = new RabbitMqFixture("availability");
-            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("Resources");
+            _rabbitMqFixture = new RabbitMqFixture(Exchange);
+            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("resources");
             factory.Server.AllowSynchronousIO = true;
         }
         
         public void Dispose()
         {
             _mongoDbFixture.Dispose();
-        }
-        
+        }   
+
         #endregion
     }
 }

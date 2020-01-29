@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -17,84 +15,55 @@ namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
 {
     public class GetResourceTests : IDisposable, IClassFixture<PaccoApplicationFactory<Program>>
     {
-        Task<HttpResponseMessage> Act()
-            => _httpClient.GetAsync($"resources/{ResourceId}");
+        private Task<HttpResponseMessage> Act() => _httpClient.GetAsync($"resources/{_resourceId}");
 
         [Fact]
-        public async Task GetResource_Endpoint_Should_Return_NotFound_Http_Status_Code_If_No_Resource_Is_Found()
+        public async Task get_resource_endpoint_should_return_not_found_status_code_if_resource_document_does_not_exist()
         {
             var response = await Act();
-
+            
             response.ShouldNotBeNull();
             response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
         }
-        
+
         [Fact]
-        public async Task GetResource_Endpoint_Should_Return_Success_Http_Status_Code_If_Resource_Is_Found()
+        public async Task get_resource_endpoint_should_return_dto_with_correct_data()
         {
             await InsertResourceAsync();
-            
             var response = await Act();
-           
+            
             response.ShouldNotBeNull();
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            var content = await response.Content.ReadAsStringAsync();
+            var dto = JsonConvert.DeserializeObject<ResourceDto>(content);
+            
+            dto.Id.ShouldBe(_resourceId);
         }
         
-        [Fact]
-        public async Task GetResource_Endpoint_Should_Return_Dto_With_Correct_Data()
-        {
-            await InsertResourceAsync();
-            
-            var response = await Act();
-            var dto = await GetDtoAsync(response);
-            var reservations = dto.Reservations.ToArray(); 
-            var tags = dto.Tags.ToArray(); 
-            
-            dto.ShouldNotBeNull();
-            dto.Id.ToString().ShouldBe(ResourceId);
-            reservations.Length.ShouldBe(1);
-            reservations.First().Priority.ShouldBe(Reservation.Priority);
-            reservations.First().DateTime.ShouldBe(Reservation.TimeStamp.AsDateTime());
-            tags.Length.ShouldBe(1);
-            tags.First().ShouldBe(Tag);
-        }
-        
-        #region ARRANGE    
-        
-        private readonly MongoDbFixture<ResourceDocument, Guid> _mongoDbFixture;
+        #region Arrange
+
+        private readonly Guid _resourceId; 
         private readonly HttpClient _httpClient;
-        
-        private const string ResourceId = "587acaf9-629f-4896-a893-4e94ae628652";
-        private const string Tag = "test";
-        private readonly ReservationDocument Reservation = new ReservationDocument
-        {
-            Priority = 1, TimeStamp = DateTime.UtcNow.AsDaysSinceEpoch()
-        };
-        
-        private async Task InsertResourceAsync()
-        {
-            var resourceId = new Guid(ResourceId);
-            await _mongoDbFixture.InsertAsync(new ResourceDocument
+        private readonly MongoDbFixture<ResourceDocument, Guid> _mongoDbFixture;
+
+        private Task InsertResourceAsync()
+            => _mongoDbFixture.InsertAsync(new ResourceDocument
             {
-                Id = resourceId,
-                Tags = new[]{Tag},
-                Reservations = new List<ReservationDocument>
+                Id = _resourceId,
+                Tags = new[] {"tag"},
+                Reservations = new[]
                 {
-                    Reservation
+                    new ReservationDocument
+                    {
+                        Priority = 0,
+                        TimeStamp = DateTime.UtcNow.AsDaysSinceEpoch()
+                    }
                 }
             });
-        }
-
-        private async Task<ResourceDto> GetDtoAsync(HttpResponseMessage response)
-        {
-            var json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ResourceDto>(json);
-        }
         
         public GetResourceTests(PaccoApplicationFactory<Program> factory)
         {
-            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("Resources");
-            
+            _resourceId = Guid.NewGuid();
+            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("resources");
             factory.Server.AllowSynchronousIO = true;
             _httpClient = factory.CreateClient();
         }
@@ -103,6 +72,7 @@ namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
         {
             _mongoDbFixture.Dispose();
         }
+        
         #endregion
     }
 }

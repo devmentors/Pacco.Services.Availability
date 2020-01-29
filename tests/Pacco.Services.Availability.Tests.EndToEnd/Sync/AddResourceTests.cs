@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Pacco.Services.Availability.Api;
@@ -17,13 +17,13 @@ namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
 {
     public class AddResourceTests : IDisposable, IClassFixture<PaccoApplicationFactory<Program>>
     {
-        Task<HttpResponseMessage> Act(AddResource command)
-            => _httpClient.PostAsync("resources", GetHttpContent(command));
+        private Task<HttpResponseMessage> Act(AddResource command) 
+            => _httpClient.PostAsync("resources", GetContent(command));
 
         [Fact]
-        public async Task AddResource_Endpoint_Should_Return_Created_Http_Status_Code()
+        public async Task add_resource_endpoint_should_return_http_status_code_created()
         {
-            var command = new AddResource(_resourceId, _tags);
+            var command = new AddResource(Guid.NewGuid(), new []{"tag"});
 
             var response = await Act(command);
             
@@ -32,22 +32,22 @@ namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
         }
         
         [Fact]
-        public async Task AddResource_Endpoint_Should_Return_Location_Header_With_Correct_ResourceId()
+        public async Task add_resource_endpoint_should_return_location_header_with_correct_resource_id()
         {
-            var command = new AddResource(_resourceId, _tags);
+            var command = new AddResource(Guid.NewGuid(), new []{"tag"});
 
             var response = await Act(command);
 
             var locationHeader = response.Headers.FirstOrDefault(h => h.Key == "Location").Value.First();
             
             locationHeader.ShouldNotBeNull();
-            locationHeader.ShouldBe($"resources/{_resourceId}");
+            locationHeader.ShouldBe($"resources/{command.ResourceId}");
         }
-        
+
         [Fact]
-        public async Task AddResource_Endpoint_Should_Add_Resource_With_Given_Id_To_Database()
+        public async Task add_resource_endpoint_should_add_document_with_given_id_to_database()
         {
-            var command = new AddResource(_resourceId, _tags);
+            var command = new AddResource(Guid.NewGuid(), new []{"tag"});
 
             await Act(command);
 
@@ -55,34 +55,17 @@ namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
             
             document.ShouldNotBeNull();
             document.Id.ShouldBe(command.ResourceId);
-            document.Tags.ShouldBe(_tags);
+            document.Tags.ShouldBe(command.Tags);
         }
-        
-        #region ARRANGE    
-        
-        private readonly MongoDbFixture<ResourceDocument, Guid> _mongoDbFixture;
+
+        #region Arrange
+
         private readonly HttpClient _httpClient;
+        private readonly MongoDbFixture<ResourceDocument, Guid> _mongoDbFixture;
         
-        private readonly Guid _resourceId;
-        private readonly string[] _tags;
-
-        private HttpContent GetHttpContent(AddResource command)
-        {
-            var json = JsonConvert.SerializeObject(command);
-            var buffer = System.Text.Encoding.UTF8.GetBytes(json);
-            var byteContent = new ByteArrayContent(buffer);
-            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            return byteContent;
-        }
-
         public AddResourceTests(PaccoApplicationFactory<Program> factory)
         {
-            _resourceId = Guid.Parse("587acaf9-629f-4896-a893-4e94ae628652");
-            _tags = new[]{"tags"};
-
-            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("Resources");
-            
+            _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("resources");
             factory.Server.AllowSynchronousIO = true;
             _httpClient = factory.CreateClient();
         }
@@ -91,6 +74,9 @@ namespace Pacco.Services.Availability.Tests.EndToEnd.Sync
         {
             _mongoDbFixture.Dispose();
         }
+        
+        private static StringContent GetContent(object value) 
+            => new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
         
         #endregion
     }
