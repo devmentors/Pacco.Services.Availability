@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Convey;
-using Convey.Configurations.Vault;
+using Convey.Secrets.Vault;
 using Convey.Logging;
 using Convey.Types;
 using Convey.WebApi;
