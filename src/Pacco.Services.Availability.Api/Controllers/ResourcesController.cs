@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
+using Convey.CQRS.Commands;
 using Microsoft.AspNetCore.Mvc;
+using Pacco.Services.Availability.Application.Commands;
 
 namespace Pacco.Services.Availability.Api.Controllers
 {
@@ -8,11 +10,18 @@ namespace Pacco.Services.Availability.Api.Controllers
     [Route("api/[controller]")]
     public class ResourcesController : ControllerBase
     {
-        [HttpPost]
-        public async Task<ActionResult> Post()
+        private readonly ICommandDispatcher _commandDispatcher;
+
+        public ResourcesController(ICommandDispatcher commandDispatcher)
         {
-            await Task.CompletedTask;
-            return Created($"resources/{Guid.NewGuid()}", null);
+            _commandDispatcher = commandDispatcher;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] AddResource command)
+        {
+            await _commandDispatcher.SendAsync(command);
+            return Created($"resources/{command.ResourceId}", null);
         }
     }
 }
