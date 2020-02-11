@@ -27,7 +27,7 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
 
             var resource = Resource.Create(command.ResourceId, command.Tags);
             await _repository.AddAsync(resource);
-
+            
             await _processor.ProcessAsync(resource.Events);
         }
     }
