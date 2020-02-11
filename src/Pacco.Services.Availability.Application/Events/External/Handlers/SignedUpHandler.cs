@@ -6,9 +6,7 @@ namespace Pacco.Services.Availability.Application.Events.External.Handlers
 {
     public sealed class SignedUpHandler : IEventHandler<SignedUp>
     {
-        public async Task HandleAsync(SignedUp @event)
-        {
-            Console.WriteLine($"Received message {@event.GetType().Name}");
-        }
+        public Task HandleAsync(SignedUp @event)
+            => Task.CompletedTask;
     }
 }

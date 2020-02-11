@@ -6,9 +6,7 @@ namespace Pacco.Services.Availability.Application.Events.External.Handlers
 {
     public sealed class CustomerCreatedHandler : IEventHandler<CustomerCreated>
     {
-        public async Task HandleAsync(CustomerCreated @event)
-        {
-            Console.WriteLine($"Received {@event.GetType().Name}");
-        }
+        public Task HandleAsync(CustomerCreated @event)
+            => Task.CompletedTask;
     }
 }

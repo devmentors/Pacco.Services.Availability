@@ -15,7 +15,9 @@ namespace Pacco.Services.Availability.Infrastructure.Services
         public IEvent Map(IDomainEvent @event) 
             => @event switch
             {
-                ResourceCreated e => new ResourceAdded(e.Resource.Id),
+                ResourceCreated e => (IEvent) new ResourceAdded(e.Resource.Id),
+                ReservationAdded e => new ResourceReserved(e.Resource.Id, e.Reservation.DateTime),
+                ReservationCanceled e => new ResourceReservationCanceled(e.Resource.Id, e.Reservation.DateTime),
                 _ => null
             };
         

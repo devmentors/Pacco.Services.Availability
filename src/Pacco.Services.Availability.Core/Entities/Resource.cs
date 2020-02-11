@@ -56,25 +56,27 @@ namespace Pacco.Services.Availability.Core.Entities
 
         public void AddReservation(Reservation reservation)
         {
-            Version++;
-
             var hasCollidingReservation = _reservations.Any(HasTheSameReservationDate);
-
             if (hasCollidingReservation)
             {
                 var collidingReservation = _reservations.First(HasTheSameReservationDate);
-
-                if (reservation.Priority <= collidingReservation.Priority)
+                if (collidingReservation.Priority >= reservation.Priority)
                 {
-                    throw new CannotExpropriateReservationException(Id, collidingReservation.DateTime);
+                    throw new CannotExpropriateReservationException(Id, reservation.DateTime.Date);
                 }
 
-                _reservations.Remove(collidingReservation);
+                if (_reservations.Remove(collidingReservation))
+                {
+                    AddEvent(new ReservationCanceled(this, collidingReservation));
+                }
             }
 
-            _reservations.Add(reservation);
+            if (_reservations.Add(reservation))
+            {
+                AddEvent(new ReservationAdded(this, reservation));
+            }
 
-            bool HasTheSameReservationDate(Reservation r) => r.DateTime == reservation.DateTime; 
+            bool HasTheSameReservationDate(Reservation r) => r.DateTime.Date == reservation.DateTime.Date;
         }
 
         public void ReleaseReservation(Reservation reservation)
