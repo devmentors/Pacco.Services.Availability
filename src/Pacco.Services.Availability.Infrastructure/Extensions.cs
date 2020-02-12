@@ -6,6 +6,7 @@ using Convey;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
 using Convey.CQRS.Queries;
+using Convey.HTTP;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.Outbox;
@@ -20,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Pacco.Services.Availability.Application.Events.External;
 using Pacco.Services.Availability.Application.Services;
+using Pacco.Services.Availability.Application.Services.Clients;
 using Pacco.Services.Availability.Core.Repositories;
 using Pacco.Services.Availability.Infrastructure.Contexts;
 using Pacco.Services.Availability.Infrastructure.Decorators;
@@ -28,6 +30,7 @@ using Pacco.Services.Availability.Infrastructure.Logging;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
 using Pacco.Services.Availability.Infrastructure.Mongo.Repositories;
 using Pacco.Services.Availability.Infrastructure.Services;
+using Pacco.Services.Availability.Infrastructure.Services.Clients;
 
 namespace Pacco.Services.Availability.Infrastructure
 {
@@ -35,6 +38,7 @@ namespace Pacco.Services.Availability.Infrastructure
     {
         public static IConveyBuilder AddInfrastructure(this IConveyBuilder builder)
         {
+            builder.Services.AddTransient<ICustomersApiClient, CustomersApiClient>();
             builder.Services.AddSingleton<IEventMapper, EventMapper>();
             builder.Services.AddTransient<IMessageBroker, MessageBroker>();
             builder.Services.AddTransient<IResourcesRepository, ResourcesMongoRepository>();
@@ -50,6 +54,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddErrorHandler<ExceptionToResponseMapper>()
                 .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
                 .AddMongo()
+                .AddHttpClient()
                 .AddRabbitMq()
                 .AddMessageOutbox(o => o.AddMongo())
                 .AddRedis()
