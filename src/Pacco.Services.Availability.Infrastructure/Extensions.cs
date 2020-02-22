@@ -22,6 +22,7 @@ using Convey.Tracing.Jaeger;
 using Convey.Tracing.Jaeger.RabbitMQ;
 using Convey.WebApi;
 using Convey.WebApi.CQRS;
+using Convey.WebApi.Security;
 using Convey.WebApi.Swagger;
 using Elasticsearch.Net;
 using Microsoft.AspNetCore.Builder;
@@ -86,7 +87,8 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddJaegerDecorators()
                 .AddHandlersLogging()
                 .AddMongoRepository<ResourceDocument, Guid>("resources")
-                .AddWebApiSwaggerDocs();
+                .AddWebApiSwaggerDocs()
+                .AddCertificateAuthentication();
         }
 
         public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
@@ -98,6 +100,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .UsePublicContracts<ContractAttribute>()
                 .UseMetrics()
                 .UseMiddleware<CustomMetricsMiddleware>()
+                .UseCertificateAuthentication()
                 .UseRabbitMq()
                 .SubscribeCommand<AddResource>()
                 .SubscribeCommand<DeleteResource>()

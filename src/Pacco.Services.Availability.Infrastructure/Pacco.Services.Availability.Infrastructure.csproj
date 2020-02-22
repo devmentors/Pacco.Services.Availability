@@ -24,6 +24,7 @@
         <PackageReference Include="Convey.Tracing.Jaeger" Version="0.4.*" />
         <PackageReference Include="Convey.Tracing.Jaeger.RabbitMQ" Version="0.4.*" />
         <PackageReference Include="Convey.WebApi.CQRS" Version="0.4.*" />
+        <PackageReference Include="Convey.WebApi.Security" Version="0.4.*" />
         <PackageReference Include="Convey.WebApi.Swagger" Version="0.4.*" />
         <PackageReference Include="SmartFormat.NET" Version="2.5.0" />
     </ItemGroup>
