@@ -18,8 +18,7 @@ namespace Pacco.Services.Availability.Infrastructure.Services.Clients
         {
             _httpClient = httpClient;
             _url = options.Services["customers"];
-            if (!vaultOptions.Enabled || vaultOptions.Pki?.Enabled != true ||
-                securityOptions.Certificate?.Enabled != true)
+            if (!vaultOptions.Enabled || vaultOptions.Pki?.Enabled != true)
             {
                 return;
             }
