@@ -37,7 +37,8 @@ namespace Pacco.Services.Availability.Api
                     .UseEndpoints(e => e.MapControllers())
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
-                        .Post<AddResource>("resources")))
+                        .Post<AddResource>("resources")
+                        .Post<ReserveResource>("resources/{resourceId}/reservations/{dateTime}")))
                 .UseLogging()
                 .UseVault();
     }
