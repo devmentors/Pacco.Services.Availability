@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Convey;
 using Convey.Secrets.Vault;
 using Convey.Logging;
@@ -12,6 +13,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Pacco.Services.Availability.Application;
 using Pacco.Services.Availability.Application.Commands;
+using Pacco.Services.Availability.Application.DTO;
+using Pacco.Services.Availability.Application.Queries;
 using Pacco.Services.Availability.Infrastructure;
 
 namespace Pacco.Services.Availability.Api
@@ -37,7 +40,10 @@ namespace Pacco.Services.Availability.Api
                     .UseEndpoints(e => e.MapControllers())
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
-                        .Post<AddResource>("resources")
+                        .Get<GetResource, ResourceDto>("resources/{resourceId}")
+                        .Get<GetResources, IEnumerable<ResourceDto>>("resources")
+                        .Post<AddResource>("resources", afterDispatch: (cmd, ctx) =>
+                            ctx.Response.Created($"resources/{cmd.ResourceId}"))
                         .Post<ReserveResource>("resources/{resourceId}/reservations/{dateTime}")))
                 .UseLogging()
                 .UseVault();
