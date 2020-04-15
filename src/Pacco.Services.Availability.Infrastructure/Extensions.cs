@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Pacco.Services.Availability.Application.Commands;
+using Pacco.Services.Availability.Application.Commands.Handlers;
 using Pacco.Services.Availability.Application.Services;
 using Pacco.Services.Availability.Core.Repositories;
 using Pacco.Services.Availability.Infrastructure.Contexts;
