@@ -43,7 +43,9 @@ namespace Pacco.Services.Availability.Api.Controllers
         public async Task<ActionResult> Post(AddResource command)
         {
             await _commandDispatcher.SendAsync(command);
-            return Created($"resources/{Guid.NewGuid()}", null);
+            
+            // HTTP 201 Created -> Location: resources/1
+            return Created($"resources/{command.ResourceId}", null);
         }
     }
 }

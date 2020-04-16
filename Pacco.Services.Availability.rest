@@ -10,12 +10,12 @@ GET {{url}}/resources?tags={{tags}}&matchAllTags=false
 GET {{url}}/resources/{{resourceId}}
 
 ###
-POST {{url}}/api/resources
+POST {{url}}/resources
 Content-Type: application/json
 
 {
   "resourceId": "{{resourceId}}",
-  "tags": []
+  "tags": {{tags}}
 }
 
 ###
