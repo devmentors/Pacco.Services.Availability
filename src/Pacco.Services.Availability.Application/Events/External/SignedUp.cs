@@ -2,7 +2,7 @@ using System;
 using Convey.CQRS.Events;
 using Convey.MessageBrokers;
 
-namespace Pacco.Services.Availability.Application.Events
+namespace Pacco.Services.Availability.Application.Events.External
 {
     [Message("identity")]
     public class SignedUp : IEvent

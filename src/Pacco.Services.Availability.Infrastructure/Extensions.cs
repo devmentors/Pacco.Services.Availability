@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Application.Commands.Handlers;
 using Pacco.Services.Availability.Application.Events;
+using Pacco.Services.Availability.Application.Events.External;
 using Pacco.Services.Availability.Application.Services;
 using Pacco.Services.Availability.Core.Repositories;
 using Pacco.Services.Availability.Infrastructure.Contexts;
