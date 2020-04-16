@@ -59,6 +59,7 @@ namespace Pacco.Services.Availability.Infrastructure
             app.UseErrorHandler()
                 .UseConvey()
                 .UseRabbitMq()
+                .SubscribeEvent<CustomerCreated>()
                 .SubscribeEvent<SignedUp>();
 
             return app;
