@@ -38,6 +38,7 @@ namespace Pacco.Services.Availability.Infrastructure
     {
         public static IConveyBuilder AddInfrastructure(this IConveyBuilder builder)
         {
+            builder.Services.AddTransient<ICustomersServiceClient, CustomersServiceClient>();
             builder.Services.AddSingleton<IEventMapper, EventMapper>();
             builder.Services.AddTransient<IMessageBroker, MessageBroker>();
             builder.Services.AddTransient<IResourcesRepository, ResourcesMongoRepository>();

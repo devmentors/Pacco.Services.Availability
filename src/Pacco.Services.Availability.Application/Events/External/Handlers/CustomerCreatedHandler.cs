@@ -7,6 +7,7 @@ namespace Pacco.Services.Availability.Application.Events.External.Handlers
     {
         public async Task HandleAsync(CustomerCreated @event)
         {
+            // Customers -> insert new Customer()
             await Task.CompletedTask;
         }
     }
