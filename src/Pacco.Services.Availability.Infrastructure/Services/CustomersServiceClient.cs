@@ -1,6 +1,6 @@
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
+using Convey.HTTP;
 using Pacco.Services.Availability.Application.DTO;
 using Pacco.Services.Availability.Application.Services;
 
@@ -8,17 +8,16 @@ namespace Pacco.Services.Availability.Infrastructure.Services
 {
     public class CustomersServiceClient : ICustomersServiceClient
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IHttpClient _httpClient;
+        private readonly string _url;
 
-        public CustomersServiceClient(IHttpClientFactory httpClientFactory)
+        public CustomersServiceClient(IHttpClient httpClient, HttpClientOptions options)
         {
-            _httpClientFactory = httpClientFactory;
+            _httpClient = httpClient;
+            _url = options.Services["customers"];
         }
-        
+
         public Task<CustomerStateDto> GetStateAsync(Guid customerId)
-        {
-            var client = _httpClientFactory.CreateClient();
-            throw new NotImplementedException();
-        }
+            => _httpClient.GetAsync<CustomerStateDto>($"{_url}/customers/{customerId}/state");
     }
 }
