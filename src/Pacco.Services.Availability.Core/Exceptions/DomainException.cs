@@ -4,7 +4,7 @@ namespace Pacco.Services.Availability.Core.Exceptions
 {
     public abstract class DomainException : Exception
     {
-        public abstract string Code { get; }
+        public virtual string Code { get; }
 
         protected DomainException(string message) : base(message)
         {

@@ -27,12 +27,12 @@ namespace Pacco.Services.Availability.Tests.Performance
                 Assertion.ForStep(stepName, s => s.OkCount >= expectedRps * duration)
             };
 
-            var scenario = ScenarioBuilder.CreateScenario("GET resources", step)
+            var scenario = ScenarioBuilder.CreateScenario("GET resources", new[] {step})
                 .WithConcurrentCopies(1)
                 .WithOutWarmUp()
                 .WithDuration(TimeSpan.FromSeconds(duration))
                 .WithAssertions(assertions);
-            
+
             NBomberRunner.RegisterScenarios(scenario)
                 .RunTest();
         }

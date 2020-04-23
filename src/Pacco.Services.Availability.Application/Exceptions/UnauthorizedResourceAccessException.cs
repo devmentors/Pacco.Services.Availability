@@ -4,7 +4,7 @@ namespace Pacco.Services.Availability.Application.Exceptions
 {
     public class UnauthorizedResourceAccessException : AppException
     {
-        public override string Code => "unauthorized_resource_access";
+        public override string Code { get; } = "unauthorized_resource_access";
         public Guid ResourceId { get; }
         public Guid CustomerId { get; }
 

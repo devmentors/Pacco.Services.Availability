@@ -4,7 +4,7 @@ namespace Pacco.Services.Availability.Application.Exceptions
 {
     public class InvalidCustomerStateException : AppException
     {
-        public override string Code => "invalid_customer_state";
+        public override string Code { get; } = "invalid_customer_state";
         public Guid Id { get; }
         public string State { get; }
 
