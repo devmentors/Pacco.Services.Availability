@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Convey;
 using Convey.MessageBrokers.RabbitMQ;
 using Newtonsoft.Json;
 using Pacco.Services.Availability.Tests.Shared.Helpers;
@@ -15,15 +14,11 @@ namespace Pacco.Services.Availability.Tests.Shared.Fixtures
     public class RabbitMqFixture
     {
         private readonly IModel _channel;
-        private readonly string _defaultNamespace;
         private bool _disposed = false;
         
-        public RabbitMqFixture(string defaultNamespace)
+        public RabbitMqFixture()
         {
             var options = OptionsHelper.GetOptions<RabbitMqOptions>("rabbitMq");
-            
-            _defaultNamespace = defaultNamespace;
-            
             var connectionFactory = new ConnectionFactory
             {
                 HostName = options.HostNames?.FirstOrDefault(
@@ -80,7 +75,7 @@ namespace Pacco.Services.Availability.Tests.Shared.Fixtures
             consumer.Received += async (model, ea) =>
             {
                 var body = ea.Body;
-                var json = Encoding.UTF8.GetString(body);
+                var json = Encoding.UTF8.GetString(body.Span);
                 var message = JsonConvert.DeserializeObject<TMessage>(json);
 
                 await onMessageReceived(id, taskCompletionSource);
@@ -97,16 +92,6 @@ namespace Pacco.Services.Availability.Tests.Shared.Fixtures
             => string.Concat(value.Select((x, i) =>
                     i > 0 && value[i - 1] != '.' && value[i - 1] != '/' && char.IsUpper(x) ? "_" + x : x.ToString()))
                 .ToLowerInvariant();
-
-        
-        
-        private string GetRoutingKey<T>(T message, string @namespace = null)
-        {
-            @namespace ??= _defaultNamespace;
-            @namespace = string.IsNullOrWhiteSpace(@namespace) ? string.Empty : $"{@namespace}.";
-
-            return $"{@namespace}{typeof(T).Name.Underscore()}".ToLowerInvariant();
-        }
 
         protected virtual void Dispose(bool disposing)
         {
