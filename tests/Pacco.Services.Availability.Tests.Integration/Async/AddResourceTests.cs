@@ -41,7 +41,7 @@ namespace Pacco.Services.Availability.Tests.Integration.Async
         
         public AddResourceTests(PaccoApplicationFactory<Program> factory)
         {
-            _rabbitMqFixture = new RabbitMqFixture(Exchange);
+            _rabbitMqFixture = new RabbitMqFixture();
             _mongoDbFixture = new MongoDbFixture<ResourceDocument, Guid>("resources");
             factory.Server.AllowSynchronousIO = true;
         }
