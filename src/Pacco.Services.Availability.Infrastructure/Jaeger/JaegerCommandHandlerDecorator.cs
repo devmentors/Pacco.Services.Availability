@@ -2,11 +2,13 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
+using Convey.Types;
 using OpenTracing;
 using OpenTracing.Tag;
 
 namespace Pacco.Services.Availability.Infrastructure.Jaeger
 {
+    [Decorator]
     internal sealed class JaegerCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
         where TCommand : class, ICommand
     {
