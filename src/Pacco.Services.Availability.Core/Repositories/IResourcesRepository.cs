@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pacco.Services.Availability.Core.Entities;
 
