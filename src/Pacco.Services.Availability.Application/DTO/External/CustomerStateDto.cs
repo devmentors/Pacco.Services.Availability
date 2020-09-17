@@ -1,6 +1,6 @@
 using System;
 
-namespace Pacco.Services.Availability.Application.DTO
+namespace Pacco.Services.Availability.Application.DTO.External
 {
     public class CustomerStateDto
     {
