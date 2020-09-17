@@ -47,7 +47,8 @@ namespace Pacco.Services.Availability.Api
                         .Get<GetResource, ResourceDto>("resources/{resourceId}")
                         .Get<GetResources, IEnumerable<ResourceDto>>("resources")
                         .Post<AddResource>("resources", afterDispatch: (cmd, ctx) => 
-                            ctx.Response.Created($"resources/{cmd.ResourceId}"))))
+                            ctx.Response.Created($"resources/{cmd.ResourceId}"))
+                        .Post<ReserveResource>("resources/{resourceId}/reservations/{dateTime}")))
                 .UseLogging()
                 .UseVault();
     }

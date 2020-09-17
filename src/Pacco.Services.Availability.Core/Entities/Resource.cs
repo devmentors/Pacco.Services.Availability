@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Pacco.Services.Availability.Core.Events;
 using Pacco.Services.Availability.Core.Exceptions;
 using Pacco.Services.Availability.Core.ValueObjects;
@@ -57,6 +58,24 @@ namespace Pacco.Services.Availability.Core.Entities
         public void AddReservation(Reservation reservation)
         {
             Version++;
+
+            var hasCollidingReservation = _reservations.Any(HasTheSameReservationDate);
+
+            if (hasCollidingReservation)
+            {
+                var collidingReservation = _reservations.First(HasTheSameReservationDate);
+                if (collidingReservation.Priority >= reservation.Priority)
+                {
+                    throw new CannotExpropriateReservationException(Id, reservation.DateTime.Date);
+                }
+
+                _reservations.Remove(collidingReservation);
+            }
+
+            _reservations.Add(reservation);
+            
+            bool HasTheSameReservationDate(Reservation r) 
+                => r.DateTime.Date == reservation.DateTime.Date;
         }
 
         public void ReleaseReservation(Reservation reservation)
