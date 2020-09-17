@@ -51,6 +51,8 @@ namespace Pacco.Services.Availability.Infrastructure.Services
             var correlationContext = _contextAccessor.CorrelationContext ??
                                      _httpContextAccessor.GetCorrelationContext();
 
+            var tasks = new List<Task>();
+            
             foreach (var @event in events)
             {
                 if (@event is null)
@@ -60,9 +62,13 @@ namespace Pacco.Services.Availability.Infrastructure.Services
 
                 var messageId = Guid.NewGuid().ToString("N");
                 _logger.LogTrace($"Publishing integration event: {@event.GetType().Name} [id: '{messageId}'].");
-                await _busPublisher.PublishAsync(@event, messageId, correlationId, spanContext, correlationContext,
+                var task = _busPublisher.PublishAsync(@event, messageId, correlationId, spanContext, correlationContext,
                     headers);
+                
+                tasks.Add(task);
             }
+
+            await Task.WhenAll(tasks);
         }
     }
 }
