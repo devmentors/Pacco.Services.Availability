@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Pacco.Services.Availability.Application;
+using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Infrastructure;
 
 namespace Pacco.Services.Availability.Api
@@ -33,9 +34,11 @@ namespace Pacco.Services.Availability.Api
                 .Configure(app => app
                     .UseInfrastructure()
                     .UseRouting()
-                    .UseEndpoints(e => e.MapControllers())
+                    .UseEndpoints(e =>e.MapControllers())
                     .UseDispatcherEndpoints(endpoints => endpoints
-                        .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))))
+                        .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
+                        .Post<AddResource>("resources", afterDispatch:
+                            (cmd, ctx) => ctx.Response.Created($"resources/{cmd.ResourceId}"))))
                 .UseLogging()
                 .UseVault();
     }
