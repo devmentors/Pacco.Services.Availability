@@ -1,5 +1,6 @@
 using System;
 using Convey.CQRS.Commands;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Pacco.Services.Availability.Application.Commands
 {
@@ -10,6 +11,10 @@ namespace Pacco.Services.Availability.Application.Commands
         public int Priority { get; }
 
         public ReserveResource(Guid resourceId, DateTime dateTime, int priority)
-            => (ResourceId, DateTime, Priority) = (resourceId, dateTime, priority);
+        {
+            ResourceId = resourceId;
+            DateTime = dateTime;
+            Priority = priority;
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,13 @@ namespace Pacco.Services.Availability.Api.Controllers
         {
             await _commandDispatcher.SendAsync(command);
             return Created($"resources/{command.ResourceId}", null);
+        }
+
+        [HttpPost("{resourceId}/reservations/{dateTime}")]
+        public async Task<IActionResult> Post([FromBody] ReserveResource command)
+        {
+            await _commandDispatcher.SendAsync(command);
+            return Ok();
         }
     }
 }
