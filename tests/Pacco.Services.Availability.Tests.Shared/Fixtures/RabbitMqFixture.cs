@@ -80,7 +80,7 @@ namespace Pacco.Services.Availability.Tests.Shared.Fixtures
             consumer.Received += async (model, ea) =>
             {
                 var body = ea.Body;
-                var json = Encoding.UTF8.GetString(body);
+                var json = Encoding.UTF8.GetString(body.Span);
                 var message = JsonConvert.DeserializeObject<TMessage>(json);
 
                 await onMessageReceived(id, taskCompletionSource);
