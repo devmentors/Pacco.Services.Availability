@@ -8,6 +8,8 @@ using Convey.CQRS.Events;
 using Convey.CQRS.Queries;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.CQRS;
+using Convey.MessageBrokers.Outbox;
+using Convey.MessageBrokers.Outbox.Mongo;
 using Convey.MessageBrokers.RabbitMQ;
 using Convey.Persistence.MongoDB;
 using Convey.Persistence.Redis;
@@ -16,6 +18,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Application.Events.External;
 using Pacco.Services.Availability.Application.Services;
 using Pacco.Services.Availability.Core.Repositories;
@@ -40,6 +43,9 @@ namespace Pacco.Services.Availability.Infrastructure
             builder.Services.AddTransient<IEventProcessor, EventProcessor>();
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
 
+            //builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(OutboxCommandHandlerDecorator<>));
+            builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
+
             return builder
                 .AddQueryHandlers()
                 .AddInMemoryQueryDispatcher()
@@ -47,6 +53,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
                 .AddMongo()
                 .AddRabbitMq()
+                .AddMessageOutbox(o => o.AddMongo())
                 .AddRedis()
                 .AddHandlersLogging()
                 .AddMongoRepository<ResourceDocument, Guid>("resources");
