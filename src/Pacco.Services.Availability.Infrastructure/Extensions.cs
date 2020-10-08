@@ -7,6 +7,7 @@ using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
 using Convey.CQRS.Queries;
 using Convey.MessageBrokers;
+using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.RabbitMQ;
 using Convey.Persistence.MongoDB;
 using Convey.Persistence.Redis;
@@ -59,6 +60,11 @@ namespace Pacco.Services.Availability.Infrastructure
                 .Subscribe<SignedUp>(async (sp, @event, _) =>
                 {
                     var handler = sp.GetService<IEventHandler<SignedUp>>();
+                    handler?.HandleAsync(@event);
+                })
+                .Subscribe<CustomerCreated>(async (sp, @event, _) =>
+                {
+                    var handler = sp.GetService<IEventHandler<CustomerCreated>>();
                     handler?.HandleAsync(@event);
                 });
 
