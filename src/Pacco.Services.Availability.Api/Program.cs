@@ -34,7 +34,10 @@ namespace Pacco.Services.Availability.Api
                 .Configure(app => app
                     .UseInfrastructure()
                     .UseRouting()
-                    .UseEndpoints(e =>e.MapControllers())
+                    .UseEndpoints(e =>
+                    {
+                        e.MapControllers();
+                    })
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
                         .Post<AddResource>("resources", afterDispatch:
