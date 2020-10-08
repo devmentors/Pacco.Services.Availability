@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Queries;
@@ -33,6 +34,19 @@ namespace Pacco.Services.Availability.Api.Controllers
             }
 
             return Ok(resource);
+        }
+        
+        [HttpGet]
+        public async Task<ActionResult<ResourceDto>> Get([FromQuery] SearchResources query)
+        {
+            var resources = await _queryDispatcher.QueryAsync<SearchResources, IEnumerable<ResourceDto>>(query);
+
+            if (resources is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(resources);
         }
 
         [HttpPost]
