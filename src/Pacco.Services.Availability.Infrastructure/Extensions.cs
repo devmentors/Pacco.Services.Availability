@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Pacco.Services.Availability.Application.Events.External;
 using Pacco.Services.Availability.Application.Services;
 using Pacco.Services.Availability.Core.Repositories;
 using Pacco.Services.Availability.Infrastructure.Contexts;
@@ -44,6 +45,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddErrorHandler<ExceptionToResponseMapper>()
                 .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
                 .AddMongo()
+                .AddRabbitMq()
                 .AddRedis()
                 .AddHandlersLogging()
                 .AddMongoRepository<ResourceDocument, Guid>("resources");
@@ -52,7 +54,13 @@ namespace Pacco.Services.Availability.Infrastructure
         public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
         {
             app.UseErrorHandler()
-                .UseConvey();
+                .UseConvey()
+                .UseRabbitMq()
+                .Subscribe<SignedUp>(async (sp, @event, _) =>
+                {
+                    var handler = sp.GetService<IEventHandler<SignedUp>>();
+                    handler?.HandleAsync(@event);
+                });
 
             return app;
         }
