@@ -6,6 +6,7 @@ using Convey;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
 using Convey.CQRS.Queries;
+using Convey.Discovery.Consul;
 using Convey.HTTP;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.CQRS;
@@ -57,6 +58,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
                 .AddMongo()
                 .AddHttpClient()
+                .AddConsul()
                 .AddRabbitMq()
                 .AddMessageOutbox(o => o.AddMongo())
                 .AddRedis()
