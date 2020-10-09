@@ -26,6 +26,8 @@ namespace Pacco.Services.Availability.Application.Commands.Handlers
                 throw new ResourceNotFoundException(command.ResourceId);
             }
 
+            //
+            
             var reservation = new Reservation(command.DateTime, command.Priority);
             resource.AddReservation(reservation);
             await _repository.UpdateAsync(resource);

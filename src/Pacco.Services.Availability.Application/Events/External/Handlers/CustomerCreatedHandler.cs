@@ -7,6 +7,7 @@ namespace Pacco.Services.Availability.Application.Events.External.Handlers
     {
         public async Task HandleAsync(CustomerCreated @event)
         {
+            // add customer to mongo
         }
     }
 }

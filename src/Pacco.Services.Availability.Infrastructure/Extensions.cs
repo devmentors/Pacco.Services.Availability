@@ -6,6 +6,7 @@ using Convey;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
 using Convey.CQRS.Queries;
+using Convey.HTTP;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.Outbox;
@@ -43,8 +44,8 @@ namespace Pacco.Services.Availability.Infrastructure
             builder.Services.AddTransient<IEventProcessor, EventProcessor>();
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
 
-            //builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(OutboxCommandHandlerDecorator<>));
-            builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
+            // builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(OutboxCommandHandlerDecorator<>));
+            // builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
 
             return builder
                 .AddQueryHandlers()
@@ -52,6 +53,7 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddErrorHandler<ExceptionToResponseMapper>()
                 .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
                 .AddMongo()
+                .AddHttpClient()
                 .AddRabbitMq()
                 .AddMessageOutbox(o => o.AddMongo())
                 .AddRedis()
